@@ -1,4 +1,4 @@
-package mainpackage;
+package de.hdm_stuttgart.mi;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

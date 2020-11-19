@@ -1,4 +1,4 @@
-package mainpackage;
+package de.hdm_stuttgart.mi;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

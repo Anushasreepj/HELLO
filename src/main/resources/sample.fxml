@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="mainpackage.Controller" alignment="CENTER">
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.Controller" alignment="CENTER">
     <Label text="Hello World"/>
     <Button text="Say Hello" onAction="#sayHello"/>
 </VBox>
