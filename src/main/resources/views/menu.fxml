@@ -3,7 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.Controller" alignment="CENTER">
-    <Label text="Hello World"/>
-    <Button text="Say Hello" onAction="#sayHello"/>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.MenuController" alignment="CENTER">
+    <Label text="Menu"/>
+    <Button text="Start Game" onAction="#navigateToGame"/>
+    <Button text="Tutorial" onAction="#navigateToTutorial"/>
 </VBox>

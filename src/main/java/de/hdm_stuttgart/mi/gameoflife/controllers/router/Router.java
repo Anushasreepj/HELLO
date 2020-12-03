@@ -1,9 +1,12 @@
 package de.hdm_stuttgart.mi.gameoflife.controllers.router;
 
+import de.hdm_stuttgart.mi.gameoflife.controllers.PageBaseController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,6 +18,8 @@ public class Router {
     private Double windowWidth;
     private Double windowHeight;
     private AbstractMap<String, Route> routes = new HashMap<>();
+
+    private static final Logger logger = LogManager.getLogger(Router.class);
 
     public void setRoot(Stage stage, String title, double width, double height) {
         if (rootStage == null) {
@@ -32,9 +37,14 @@ public class Router {
         routes.put(pathName, route);
     }
 
-    public void navigate(String pathName) throws IOException {
+    public void navigate(String pathName) {
         Route route = routes.get(pathName);
-        loadView(route);
+
+        try {
+            loadView(route);
+        } catch (IOException e) {
+            logger.error(e);
+        }
     }
 
     private void loadView(Route route) throws IOException {
@@ -42,7 +52,15 @@ public class Router {
 
         URL fxmlFileUrl = getClass().getClassLoader().getResource(viewSrc);
 
-        Parent view = FXMLLoader.load(fxmlFileUrl);
+        FXMLLoader fxmlLoader = new FXMLLoader(fxmlFileUrl);
+        Parent view = fxmlLoader.load();
+
+        // Get view controller
+        // Every view controller extends the `PageBaseController`
+        PageBaseController controller = fxmlLoader.getController();
+        // Set router for controller
+        controller.setRouter(this);
+
 
         rootStage.setScene(new Scene(view, windowWidth, windowHeight));
         rootStage.show();
