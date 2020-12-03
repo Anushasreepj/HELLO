@@ -1,5 +1,6 @@
 package de.hdm_stuttgart.mi;
 
+import de.hdm_stuttgart.mi.gameoflife.controllers.router.Router;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,14 +12,13 @@ import org.apache.logging.log4j.LogManager;
 
 public class Main extends Application {
     private static final Logger logger = LogManager.getLogger(Main.class);
+    private final Router router = new Router();
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        URL fxmlFileUrl = getClass().getClassLoader().getResource("sample.fxml");
-        Parent root = FXMLLoader.load(fxmlFileUrl);
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
-        primaryStage.show();
+    public void start(Stage primaryStage) throws Exception {
+        router.setRoot(primaryStage, "Game Of Live", 960, 540);
+        router.addPath("menu", "views/sample.fxml");
+        router.navigate("menu");
     }
 
     public static void main(String[] args) {
