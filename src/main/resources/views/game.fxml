@@ -21,9 +21,7 @@
     <left></left>
     <right></right>
     <center>
-        <HBox id="wrapper" fx:id="wrapper">
-
-        </HBox>
+        <HBox id="wrapper" fx:id="wrapper"></HBox>
     </center>
     <bottom>
         <HBox>

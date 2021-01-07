@@ -7,6 +7,6 @@ public class UICell extends Rectangle {
     public UICell() {
         this.setWidth(20);
         this.setHeight(20);
-        this.setFill(Color.DARKGRAY);
+        this.setFill(Math.random() > 0.5 ? Color.DARKGRAY : Color.PURPLE);
     }
 }
