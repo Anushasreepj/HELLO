@@ -5,11 +5,13 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Text?>
 
+<?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomableScrollPane?>
+<?import javafx.scene.shape.Box?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.GameController">
     <top>
         <HBox alignment="CENTER_LEFT">
             <BorderPane.margin>
-                <Insets left="15" right="15" top="15"/>
+                <Insets left="15" right="15" top="15" bottom="15"/>
             </BorderPane.margin>
             <Button prefHeight="32" text="Back" onAction="#navigateToMenu"/>
             <spacing>15</spacing>
@@ -19,8 +21,16 @@
     <left></left>
     <right></right>
     <center>
-        <GridPane id="grid" fx:id="grid" alignment="CENTER" hgap="1" vgap="1"></GridPane>
+        <HBox id="wrapper" fx:id="wrapper">
+
+        </HBox>
     </center>
     <bottom>
+        <HBox>
+            <BorderPane.margin>
+                <Insets left="15" right="15" top="15" bottom="15"/>
+            </BorderPane.margin>
+            <Text>Info</Text>
+        </HBox>
     </bottom>
 </BorderPane>
