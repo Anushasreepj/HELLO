@@ -2,8 +2,25 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.GameController" alignment="CENTER">
-    <Label text="Game"/>
-    <Button text="Back" onAction="#navigateToMenu"/>
-</VBox>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.GameController">
+    <top>
+        <HBox alignment="CENTER_LEFT">
+            <BorderPane.margin>
+                <Insets left="15" right="15" top="15"/>
+            </BorderPane.margin>
+            <Button prefHeight="32" text="Back" onAction="#navigateToMenu"/>
+            <spacing>15</spacing>
+            <Text>Conway's Game of Life</Text>
+        </HBox>
+    </top>
+    <left></left>
+    <right></right>
+    <center>
+        <Label>W</Label>
+    </center>
+    <bottom>
+    </bottom>
+</BorderPane>
