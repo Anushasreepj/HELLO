@@ -17,6 +17,9 @@ public class UIZoomableScrollPane extends ScrollPane {
 
     public UIZoomableScrollPane(Node target) {
         super();
+
+        this.setStyle("-fx-background-color:transparent;");
+
         this.target = target;
         this.zoomNode = new Group(target);
         setContent(outerNode(zoomNode));
@@ -24,10 +27,28 @@ public class UIZoomableScrollPane extends ScrollPane {
         setPannable(true);
         setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        setFitToHeight(true); //center
-        setFitToWidth(true); //center
+        setFitToHeight(true);
+        setFitToWidth(true);
 
         updateScale();
+    }
+
+    /**
+     * Set zoom-scale value [0,1]
+     *
+     * @param value
+     */
+    public void setScaleValue(double value) {
+        this.scaleValue = Math.max(value, 0.05);
+        this.updateScale();
+    }
+
+    // Todo
+    public void centerScrollPane() {
+        Bounds innerBounds = zoomNode.getLayoutBounds();
+        Bounds viewportBounds = getViewportBounds();
+        this.setVvalue(innerBounds.getCenterY() - viewportBounds.getCenterY());
+        this.setHvalue(innerBounds.getCenterX() - viewportBounds.getCenterX());
     }
 
     private Node outerNode(Node node) {

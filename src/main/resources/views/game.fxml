@@ -7,6 +7,7 @@
 
 <?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomableScrollPane?>
 <?import javafx.scene.shape.Box?>
+<?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomSlider?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.GameController">
     <top>
         <HBox alignment="CENTER_LEFT">
@@ -21,14 +22,14 @@
     <left></left>
     <right></right>
     <center>
-        <HBox id="wrapper" fx:id="wrapper"></HBox>
+        <HBox alignment="CENTER" id="wrapper" fx:id="wrapper"></HBox>
     </center>
     <bottom>
         <HBox>
             <BorderPane.margin>
                 <Insets left="15" right="15" top="15" bottom="15"/>
             </BorderPane.margin>
-            <Text>Info</Text>
+            <UIZoomSlider id="zoomSlider" fx:id="zoomSlider"></UIZoomSlider>
         </HBox>
     </bottom>
 </BorderPane>

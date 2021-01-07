@@ -1,6 +1,7 @@
 package de.hdm_stuttgart.mi.gameoflife.controllers;
 
 import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIGrid;
+import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomSlider;
 import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomableScrollPane;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,10 +26,19 @@ public class GameController extends PageBaseController {
     @FXML
     private UIZoomableScrollPane scrollPane;
 
+    @FXML
+    private UIZoomSlider zoomSlider;
+
     public void initialize() {
         grid = new UIGrid();
         scrollPane = new UIZoomableScrollPane(grid);
         wrapper.getChildren().add(scrollPane);
+
+        scrollPane.setScaleValue(0.5);
+
+        zoomSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            scrollPane.setScaleValue((double) newValue / 100);
+        });
     }
 
 }
