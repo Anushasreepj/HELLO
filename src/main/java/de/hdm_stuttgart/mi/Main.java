@@ -5,12 +5,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
 import java.net.URL;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 public class Main extends Application {
-    private static final Logger logger = LogManager.getLogger(Main.class);
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -22,7 +20,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        logger.info("Starting App");
         launch(args);
     }
 }
