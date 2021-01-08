@@ -1,6 +1,6 @@
-package de.hdm_stuttgart.mi.gameoflife;
+package de.hdm_stuttgart.mi.gameoflife.core;
 
-public class Position {
+public class Cell {
     private int x;
     private int y;
 
@@ -12,7 +12,7 @@ public class Position {
         return y;
     }
 
-    public Position(int x, int y) {
+    public Cell(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -26,7 +26,7 @@ public class Position {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Position pos = (Position) o;
-        return pos.x == this.x && pos.y == this.y;
+        Cell otherCell = (Cell) o;
+        return otherCell.x == this.x && otherCell.y == this.y;
     }
 }
