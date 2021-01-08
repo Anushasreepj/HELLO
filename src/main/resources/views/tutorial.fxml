@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.TutorialController" alignment="CENTER">
+    <Label text="Tutorial"/>
+    <Button text="Back" onAction="#navigateToMenu"/>
+</VBox>
