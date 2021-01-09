@@ -10,7 +10,19 @@ public class Engine implements IEngine{
     private IGrid gameGrid = new Grid();
     private Timer timer = new Timer();
 
+    private Stack<CellState> changes = new Stack<CellState>();
+
     private static final int msPerTick = 50; //Placeholder for reaching 20tps. TODO: Use Settings Object to Control.
+
+
+
+    public Engine(IGrid grid){
+        gameGrid = grid;
+    }
+
+    public Engine(){
+        gameGrid = new Grid();
+    }
 
 
     @Override
@@ -32,47 +44,66 @@ public class Engine implements IEngine{
 
     @Override
     public void nextGeneration() {
-        //Highly W.I.P. Solution, will reiterate after presentation from felix' team.
+        synchronized (gameGrid){ //locks gamegrid. Will still be used in calculations, but only to get, without setters.
 
-        //Using fixedThreadPool to limit the amount of concurrency to lower chance for lag spikes
-        ExecutorService es = Executors.newFixedThreadPool(8); //TODO: Add configuration option for concurrency level?
+            //Highly W.I.P. Solution, will reiterate after presentation from felix' team.
 
-        HashSet<Cell> deadCellsToCheck = new HashSet<Cell>();
-        HashSet<CellState> cellStates = new HashSet<CellState>();
+            ExecutorService es = Executors.newCachedThreadPool();
 
-        //Get all neighbour-Cells that are dead and start processes for alive cells
-        for (Cell cell: gameGrid.getAliveCells()) {
-            deadCellsToCheck.addAll(cell.getNeighbours());
+            HashSet<Cell> deadCellsToCheck = new HashSet<Cell>();
+            HashSet<CellState> cellStates = new HashSet<CellState>();
 
-            StateCalculatorRunnable stateCalculator = new StateCalculatorRunnableAlive(cell,gameGrid);
-            cellStates.add(stateCalculator.cellState);
+            //Get all neighbour-Cells that are dead and start processes for alive cells
+            for (Cell cell: gameGrid.getAliveCells()) {
 
-            es.execute(stateCalculator);
-        }
 
-        for(Cell cell: deadCellsToCheck){
-            StateCalculatorRunnable stateCalculator = new StateCalculatorRunnableDead(cell,gameGrid);
-            cellStates.add(stateCalculator.cellState);
+                for (Cell neighbourCell:cell.getNeighbours()){
+                    if(!gameGrid.getState(neighbourCell)) deadCellsToCheck.add(neighbourCell);
+                }
 
-            es.execute(stateCalculator);
-        }
+                StateCalculatorRunnable stateCalculator = new StateCalculatorRunnableAlive(cell,gameGrid);
+                cellStates.add(stateCalculator.cellState);
 
-        es.shutdown(); //Stop new tasks being submitted
+                es.execute(stateCalculator);
+            }
 
-        try {
-            es.awaitTermination(msPerTick, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            //TODO: Log Error
-        }
+            for(Cell cell: deadCellsToCheck){
+                StateCalculatorRunnable stateCalculator = new StateCalculatorRunnableDead(cell,gameGrid);
+                cellStates.add(stateCalculator.cellState);
 
-        //TODO: Execute changes.
+                es.execute(stateCalculator);
+            }
 
-        for (CellState state:cellStates) {
-            if(state.isChanged()){
-                gameGrid.setState(state.getCell(), state.isAlive());
+            es.shutdown(); //Stop new tasks being submitted
+
+            try {
+                es.awaitTermination(msPerTick, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                //TODO: Log Error
+            }
+
+            //TODO: Execute changes.
+
+            for (CellState state:cellStates) {
+                if(state.isChanged()){
+                    changes.add(state);
+                    gameGrid.setState(state.getCell(), state.isAlive());
+                }
             }
         }
+    }
 
+    @Override
+    public void loadGrid(IGrid grid) {
+        stopCalculation();
+
+        //Won't replace grid if calculations are ongoing
+
+        synchronized(gameGrid){
+            gameGrid = grid;
+        }
+
+        //startCalculation(); ??
 
     }
 
