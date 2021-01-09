@@ -50,7 +50,7 @@ public class Engine implements IEngine{
 
             ExecutorService es = Executors.newCachedThreadPool();
 
-            HashSet<Cell> deadCellsToCheck = new HashSet<Cell>();
+            HashMap<Cell,Byte> deadCellsToCheck = new HashMap<Cell,Byte>();
             HashSet<CellState> cellStates = new HashSet<CellState>();
 
             //Get all neighbour-Cells that are dead and start processes for alive cells
@@ -58,7 +58,13 @@ public class Engine implements IEngine{
 
 
                 for (Cell neighbourCell:cell.getNeighbours()){
-                    if(!gameGrid.getState(neighbourCell)) deadCellsToCheck.add(neighbourCell);
+                    if(!gameGrid.getState(neighbourCell)) {
+                        if(deadCellsToCheck.containsKey(neighbourCell)){
+                            deadCellsToCheck.put(neighbourCell, (byte) (deadCellsToCheck.get(neighbourCell)+1));
+                        } else {
+                            deadCellsToCheck.put(neighbourCell, (byte) 1);
+                        }
+                    }
                 }
 
                 StateCalculatorRunnable stateCalculator = new StateCalculatorRunnableAlive(cell,gameGrid);
@@ -67,11 +73,10 @@ public class Engine implements IEngine{
                 es.execute(stateCalculator);
             }
 
-            for(Cell cell: deadCellsToCheck){
-                StateCalculatorRunnable stateCalculator = new StateCalculatorRunnableDead(cell,gameGrid);
-                cellStates.add(stateCalculator.cellState);
-
-                es.execute(stateCalculator);
+            for(Map.Entry<Cell,Byte> entry: deadCellsToCheck.entrySet()){
+                if(entry.getValue()==3){
+                    cellStates.add(new CellState(entry.getKey(), true, true));
+                }
             }
 
             es.shutdown(); //Stop new tasks being submitted
@@ -180,7 +185,6 @@ class StateCalculatorRunnableAlive extends StateCalculatorRunnable{
  * Target: Only needs to calculate if it will be alive or not.
  */
 class StateCalculatorRunnableDead extends StateCalculatorRunnable{
-
     public StateCalculatorRunnableDead(Cell cell, IGrid grid) {
         super(cell,false, grid);
     }
@@ -221,6 +225,12 @@ class CellState {
     public CellState(Cell cell, boolean isAlive){
         this.cell = cell;
         this.isAlive = isAlive;
+    }
+
+    public CellState(Cell cell, boolean isAlive, boolean changed){
+        this.cell = cell;
+        this.isAlive = isAlive;
+        this.changed = changed;
     }
 
     public Cell getCell() {

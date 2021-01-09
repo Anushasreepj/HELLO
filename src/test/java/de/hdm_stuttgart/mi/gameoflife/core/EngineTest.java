@@ -47,7 +47,7 @@ public class EngineTest {
         int squareOffsetX = 0;
         Cell[] square = {new Cell(0+squareOffsetX,0), new Cell(0+squareOffsetX,1),new Cell(1+squareOffsetX,0),new Cell(1+squareOffsetX,1)};
 
-        int tubOffsetX = 5;
+        int tubOffsetX = 4;
         Cell[] smallTub = {new Cell(0+tubOffsetX,1),new Cell(1+tubOffsetX,0),new Cell(1+tubOffsetX,2),new Cell(2+tubOffsetX,1),new Cell(2+tubOffsetX,3),new Cell(3+tubOffsetX,2)};
 
         int hiveOffsetX = 10;
@@ -85,6 +85,8 @@ public class EngineTest {
             assertTrue(grid.getState(cell));
         }
 
+        assertTrue(grid.getAliveCells().length==(square.length+smallTub.length+hive.length));
+
     }
 
 
@@ -117,6 +119,8 @@ public class EngineTest {
         for(Cell cell: targetPositions){
             assertTrue(grid.getState(cell));
         }
+
+        assertTrue(grid.getAliveCells().length==targetPositions.length);
     }
 
     @Test
@@ -150,21 +154,23 @@ public class EngineTest {
         for(Cell cell: expected){
             assertTrue(grid.getState(cell));
         }
+
+        assertTrue(grid.getAliveCells().length==expected.length);
     }
 
     @Test
     /**
-     * Places 100k Cells spaced out so each cell has to die.
+     * Places one 100k Cells spaced out so each cell has to die.
      * Doubles as performance test since the space is that big, that EACH neighbour cell has to get calculated too.
      */
     public void testLonelyCellsDie(){
 
         IGrid grid = new Grid();
 
-        int cellsToPlace = 1000000;
+        int cellsToPlace = 100000;
 
         for (int i = 0; i<cellsToPlace; i++){
-            grid.setState(new Cell(i*3,0),true); //Really spaced out => many neighbours to calculate too.
+            grid.setState(new Cell(i*2,0),true); //Really spaced out => many neighbours to calculate too.
         }
 
         engine.loadGrid(grid);
