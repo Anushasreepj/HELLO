@@ -44,16 +44,13 @@ public class Engine implements IEngine{
 
     @Override
     public void nextGeneration() {
-        synchronized (gameGrid){ //locks gamegrid. Will still be used in calculations, but only to get, without setters.
-
-            //Highly W.I.P. Solution, will reiterate after presentation from felix' team.
+        synchronized (gameGrid){ //locks gamegrid to let loadGamegrid() wait until this generation is completed
 
             ExecutorService es = Executors.newCachedThreadPool();
 
             HashMap<Cell,Byte> deadCellsToCheck = new HashMap<Cell,Byte>();
             HashSet<FutureCellState> futureCellStates = new HashSet<FutureCellState>();
 
-            //Get all neighbour-Cells that are dead and start processes for alive cells
             for (Cell cell: gameGrid.getAliveCells()) {
                 for (Cell neighbourCell:cell.getNeighbours()){
                     if(!gameGrid.getState(neighbourCell)) {
@@ -71,13 +68,14 @@ public class Engine implements IEngine{
                 es.execute(stateCalculator);
             }
 
+
+            es.shutdown(); //Stop new tasks being submitted
+
             for(Map.Entry<Cell,Byte> entry: deadCellsToCheck.entrySet()){
                 if(entry.getValue()==3){
                     futureCellStates.add(new FutureCellState(entry.getKey(), true, true));
                 }
             }
-
-            es.shutdown(); //Stop new tasks being submitted
 
             try {
                 es.awaitTermination(msPerTick, TimeUnit.MILLISECONDS);
@@ -85,7 +83,7 @@ public class Engine implements IEngine{
                 //TODO: Log Error
             }
 
-            //TODO: Execute changes.
+            // Execute changes.
 
             for (FutureCellState state: futureCellStates) {
                 if(state.isChanged()){
@@ -100,8 +98,7 @@ public class Engine implements IEngine{
     public void loadGrid(IGrid grid) {
         stopCalculation();
 
-        //Won't replace grid if calculations are ongoing
-
+        //Don't replace grid if calculations are ongoing => synchronized
         synchronized(gameGrid){
             gameGrid = grid;
         }
@@ -127,6 +124,7 @@ public class Engine implements IEngine{
 
 
 }
+
 
 
 //Internal classes to add abstraction layer for State Calculation. Only uses get from the grid to stay thread safe.
