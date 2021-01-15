@@ -1,13 +1,12 @@
 package de.hdm_stuttgart.mi.gameoflife.core;
 
 
+import de.hdm_stuttgart.mi.gameoflife.core.engine.Engine;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
