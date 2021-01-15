@@ -4,6 +4,8 @@ import de.hdm_stuttgart.mi.Main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
+
 public class Editor {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
@@ -18,20 +20,23 @@ public class Editor {
     }
 
     public void loadPreset(final IPreset preset){
-        for (Cell cell: preset.getCells()) {
-            grid.setState(cell, true);
-        }
+        Arrays.stream(preset.getCells()).parallel().forEach(
+                cell -> grid.setState(cell,true)
+        );
         logger.info("Loaded preset " + preset.getName());
     }
 
     public void loadPresetOffset(final IPreset preset, final int offsetX, final int offsetY){
-        for (Cell cell: preset.getCells()) {
-            grid.setState(new Cell(cell.getX()+offsetX, cell.getY()+offsetY),true);
-        }
+
+        Arrays.stream(preset.getCells()).parallel().forEach(
+                cell -> grid.setState(new Cell(cell.getX()+offsetX, cell.getY()+offsetY),true)
+        );
+
         logger.info("Loaded preset " + preset.getName() + " offset by " + offsetX + "x, " + offsetY + "y");
     }
 
     public void clear(){
+        logger.info("Cleared grid");
         grid = new Grid();
     }
 
