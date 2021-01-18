@@ -53,6 +53,7 @@ public class StreamEngine implements IEngine {
 
             logger.trace("Started calculating next generation");
 
+            //1. Check for births
             HashMap<Cell,Integer> deadCellsToCheck = new HashMap<Cell,Integer>();
 
             Arrays.stream(gameGrid.getAliveCells()).forEach(cell -> {
@@ -65,15 +66,18 @@ public class StreamEngine implements IEngine {
                                 deadCellsToCheck.put(neighbourCell, 1); //Introduce neighbour count as 1
                 });
             });
+            
+            List<FutureCellState> futureCellStates =
+            deadCellsToCheck.entrySet().stream().filter(cellByteEntry -> cellByteEntry.getValue()==3)
+                    .map(cellByteEntry -> new FutureCellState(cellByteEntry.getKey(), true, true)).collect(Collectors.toList());
 
 
-            //Calculate next generation for alive cells
-            List<FutureCellState> futureCellStates = Arrays.stream(gameGrid.getAliveCells())
+            //2. Check for deaths
+            futureCellStates.addAll(Arrays.stream(gameGrid.getAliveCells())
                     .parallel()
                     .map(cell ->
             {
                 FutureCellState futureCellState = new FutureCellState(cell,true);
-                List<Cell> neighbours = futureCellState.getCell().getNeighbours();
 
                 byte aliveNeighbourCount = (byte) cell.getNeighbours().stream().filter(neighbourCell -> gameGrid.getState(neighbourCell)).count();
 
@@ -81,12 +85,10 @@ public class StreamEngine implements IEngine {
                 return futureCellState;
 
             }
-            ).collect(Collectors.toList());
+            ).collect(Collectors.toList()));
 
-            deadCellsToCheck.entrySet().stream().filter(cellByteEntry -> cellByteEntry.getValue()==3).forEach(cellByteEntry -> futureCellStates.add(
-                    new FutureCellState(cellByteEntry.getKey(), true, true)
-            ));
 
+            //3. Apply Changes
             futureCellStates.stream().filter(futureCellState -> futureCellState.isChanged()).forEach(futureCellState -> {
                 gameGrid.setState(futureCellState.getCell(), futureCellState.isAlive());
             });
