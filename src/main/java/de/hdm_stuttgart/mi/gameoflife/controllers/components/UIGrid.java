@@ -11,8 +11,12 @@ public class UIGrid extends GridPane {
 
         for(int i = 0; i < size; i++) {
             for(int j = 0; j < size; j++) {
-                this.add(new UICell(), i, j);
+                this.add(new UICell(false), i, j);
             }
         }
+    }
+
+    public void update() {
+
     }
 }

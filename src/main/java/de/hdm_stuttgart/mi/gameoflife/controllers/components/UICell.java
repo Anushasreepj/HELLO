@@ -4,9 +4,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class UICell extends Rectangle {
-    public UICell() {
+    public UICell(final boolean isAlive) {
         this.setWidth(20);
         this.setHeight(20);
-        this.setFill(Math.random() > 0.5 ? Color.DARKGRAY : Color.PURPLE);
+        this.setFill(isAlive ? Color.PURPLE : Color.DARKGRAY);
     }
 }
