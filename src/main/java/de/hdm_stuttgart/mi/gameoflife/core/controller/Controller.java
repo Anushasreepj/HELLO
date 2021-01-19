@@ -24,7 +24,7 @@ public class Controller implements IController {
         playState = PlayState.UNSET;
         generationCount = 0;
 
-        loadPreset(StandardPreset.getHive());
+        loadPreset(StandardPreset.getBlinker());
     }
 
     public void reset() {
