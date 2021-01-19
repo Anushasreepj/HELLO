@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Arrays;
 
 public class Editor {
-    private static final Logger logger = LogManager.getLogger(Main.class);
+    private static final Logger logger = LogManager.getLogger(Editor.class);
 
     private IGrid grid = new Grid();
 

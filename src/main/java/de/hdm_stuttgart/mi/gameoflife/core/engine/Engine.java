@@ -121,6 +121,9 @@ public class Engine implements IEngine {
     public void loadGrid(IGrid grid) {
         stopCalculation();
 
+        if(grid == null)
+            throw new IllegalArgumentException("Grid cannot be null.");
+
         //Don't replace grid if calculations are ongoing => synchronized
         synchronized(gameGrid){
             gameGrid = grid;
