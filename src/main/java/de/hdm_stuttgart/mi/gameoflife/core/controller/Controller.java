@@ -27,16 +27,25 @@ public class Controller implements IController {
         loadPreset(StandardPreset.getBlinker());
     }
 
+    /**
+     * TODO
+     */
     public void reset() {
-        engine.stopCalculation();
+        // engine.stopCalculation();
     }
 
+    /**
+     * TODO
+     */
     public void start() {
-        engine.startCalculation();
+        // engine.startCalculation();
     }
 
+    /**
+     * TODO
+     */
     public void pause() {
-        engine.stopCalculation();
+        // engine.stopCalculation();
 
     }
 
@@ -44,10 +53,16 @@ public class Controller implements IController {
         engine.nextGeneration();
     }
 
+    /**
+     * TODO
+     */
     public void setZoom() {
 
     }
 
+    /**
+     * TODO
+     */
     public void setSpeed() {
 
     }
