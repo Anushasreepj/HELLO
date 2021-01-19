@@ -1,7 +1,11 @@
 package de.hdm_stuttgart.mi.gameoflife.core.controller;
 
+import de.hdm_stuttgart.mi.gameoflife.core.Cell;
+import de.hdm_stuttgart.mi.gameoflife.core.IPreset;
+import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineNotFoundException;
+
 public interface IController {
-    void init();
+    void init() throws EngineNotFoundException;
 
     void reset();
 
@@ -15,5 +19,7 @@ public interface IController {
 
     void setSpeed();
 
-    void loadPreset();
+    Cell[] getAliveCells();
+
+    void loadPreset(IPreset preset);
 }
