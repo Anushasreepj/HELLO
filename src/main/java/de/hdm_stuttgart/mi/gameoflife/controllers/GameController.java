@@ -1,9 +1,6 @@
 package de.hdm_stuttgart.mi.gameoflife.controllers;
 
-import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIGrid;
-import de.hdm_stuttgart.mi.gameoflife.controllers.components.UISpeedSlider;
-import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomSlider;
-import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomableScrollPane;
+import de.hdm_stuttgart.mi.gameoflife.controllers.components.*;
 import de.hdm_stuttgart.mi.gameoflife.core.Cell;
 import de.hdm_stuttgart.mi.gameoflife.core.controller.Controller;
 import de.hdm_stuttgart.mi.gameoflife.core.controller.IController;
@@ -50,12 +47,9 @@ public class GameController extends PageBaseController {
 
     @FXML
     private void nextClicked(ActionEvent event) {
-        logger.info("Next Step");
         controller.nextStep();
 
-//        for (Cell cell : controller.getAliveCells()) {
-//            logger.info(cell.getX() + " - " + cell.getY());
-//        }
+        this.updateGrid();
     }
 
     public void initialize() {
@@ -72,9 +66,19 @@ public class GameController extends PageBaseController {
         try {
             // Initialize engine controller here
             controller.init();
+
+            // Update Grid
+            this.updateGrid();
+
         } catch (EngineNotFoundException e) {
             logger.error("Error while initializing engine");
         }
     }
 
+    /**
+     * Get alive cells from engine controller and update UI grid
+     */
+    private void updateGrid() {
+        grid.update(controller.getAliveCells());
+    }
 }
