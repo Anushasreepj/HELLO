@@ -84,7 +84,6 @@ public class StreamEngine implements IEngine {
             }
 
             futureCellStates.addAll(aliveCellStream
-                    .parallel()
                     .map(cell ->
                             {
                                 FutureCellState futureCellState = new FutureCellState(cell,true);
