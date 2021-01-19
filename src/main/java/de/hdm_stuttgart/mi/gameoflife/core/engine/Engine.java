@@ -12,6 +12,8 @@ public class Engine implements IEngine {
     private IGrid gameGrid = new Grid();
     private Timer timer = new Timer();
 
+    private boolean calculateParallel;
+
     private Stack<FutureCellState> changes = new Stack<FutureCellState>();
 
     private static final int msPerTick = 50; //Placeholder for reaching 20tps. TODO: Use Settings Object/Config to Control.
@@ -35,12 +37,13 @@ public class Engine implements IEngine {
 
 
     public void startCalculation(SimulationSettings settings) {
+        calculateParallel = settings.getParallelCalculations();
         startInterval(settings.getMsPerTick());
     }
 
 
     public void loadSettings(SimulationSettings settings) {
-
+        calculateParallel = settings.getParallelCalculations();
     }
 
 
@@ -85,10 +88,15 @@ public class Engine implements IEngine {
                     }
                 }
 
+
                 StateCalculatorRunnable stateCalculator = new StateCalculatorRunnable(cell,gameGrid);
                 futureCellStates.add(stateCalculator.futureCellState);
 
-                es.execute(stateCalculator);
+                if(calculateParallel){
+                    es.execute(stateCalculator);
+                } else {
+                    stateCalculator.run();
+                }
             }
 
 
