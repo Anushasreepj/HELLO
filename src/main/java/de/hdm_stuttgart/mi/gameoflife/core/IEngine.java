@@ -4,9 +4,15 @@ public interface IEngine {
 
     /**
      * Starts automatic calculation.
-     * TODO: Add Settings Object
+     * @param settings The settings object
      */
-    void startCalculation();
+    void startCalculation(SimulationSettings settings);
+
+    /**
+     * Loads in the settings for the engine.
+     * @param settings
+     */
+    void loadSettings(SimulationSettings settings);
 
     /**
      * Will stop automatic calculation.

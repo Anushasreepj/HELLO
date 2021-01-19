@@ -1,13 +1,11 @@
 package de.hdm_stuttgart.mi.gameoflife.core.engine;
-import de.hdm_stuttgart.mi.gameoflife.core.Cell;
-import de.hdm_stuttgart.mi.gameoflife.core.Grid;
-import de.hdm_stuttgart.mi.gameoflife.core.IEngine;
-import de.hdm_stuttgart.mi.gameoflife.core.IGrid;
+import de.hdm_stuttgart.mi.gameoflife.core.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StreamEngine implements IEngine {
     private static final Logger logger = LogManager.getLogger(StreamEngine.class);
@@ -15,7 +13,7 @@ public class StreamEngine implements IEngine {
     private IGrid gameGrid;
     private Timer timer = new Timer();
 
-    private static final int msPerTick = 50; //Placeholder for reaching 20tps. TODO: Use Settings Object/Config to Control.
+    private boolean calculateParallel;
 
     private TimerTask timerTask = new TimerTask() {
         public void run() { nextGeneration(); }
@@ -36,9 +34,15 @@ public class StreamEngine implements IEngine {
         gameGrid = new Grid();
     }
 
-    public void startCalculation() {
-        startInterval(msPerTick);
+    public void startCalculation(SimulationSettings settings) {
+        startInterval(settings.getMsPerTick());
+        calculateParallel = settings.getParallelCalculations();
         logger.trace("Started automated Calculation");
+    }
+
+
+    public void loadSettings(SimulationSettings settings) {
+        calculateParallel = settings.getParallelCalculations();
     }
 
 
@@ -73,19 +77,25 @@ public class StreamEngine implements IEngine {
 
 
             //2. Check for deaths
-            futureCellStates.addAll(Arrays.stream(gameGrid.getAliveCells())
+            Stream<Cell> aliveCellStream = Arrays.stream(gameGrid.getAliveCells());
+
+            if (calculateParallel){
+                aliveCellStream = aliveCellStream.parallel();
+            }
+
+            futureCellStates.addAll(aliveCellStream
                     .parallel()
                     .map(cell ->
-            {
-                FutureCellState futureCellState = new FutureCellState(cell,true);
+                            {
+                                FutureCellState futureCellState = new FutureCellState(cell,true);
 
-                byte aliveNeighbourCount = (byte) cell.getNeighbours().stream().filter(neighbourCell -> gameGrid.getState(neighbourCell)).count();
+                                byte aliveNeighbourCount = (byte) cell.getNeighbours().stream().filter(neighbourCell -> gameGrid.getState(neighbourCell)).count();
 
-                if(aliveNeighbourCount<2 | aliveNeighbourCount>3) futureCellState.setAlive(false);
-                return futureCellState;
+                                if(aliveNeighbourCount<2 | aliveNeighbourCount>3) futureCellState.setAlive(false);
+                                return futureCellState;
 
-            }
-            ).collect(Collectors.toList()));
+                            }
+                    ).collect(Collectors.toList()));
 
 
             //3. Apply Changes

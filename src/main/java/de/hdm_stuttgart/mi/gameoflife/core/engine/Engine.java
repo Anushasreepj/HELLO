@@ -1,9 +1,6 @@
 package de.hdm_stuttgart.mi.gameoflife.core.engine;
 
-import de.hdm_stuttgart.mi.gameoflife.core.Cell;
-import de.hdm_stuttgart.mi.gameoflife.core.Grid;
-import de.hdm_stuttgart.mi.gameoflife.core.IEngine;
-import de.hdm_stuttgart.mi.gameoflife.core.IGrid;
+import de.hdm_stuttgart.mi.gameoflife.core.*;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -37,8 +34,13 @@ public class Engine implements IEngine {
 
 
 
-    public void startCalculation() {
-        startInterval(msPerTick);
+    public void startCalculation(SimulationSettings settings) {
+        startInterval(settings.getMsPerTick());
+    }
+
+
+    public void loadSettings(SimulationSettings settings) {
+
     }
 
 
