@@ -66,7 +66,7 @@ public class StreamEngine implements IEngine {
                                 deadCellsToCheck.put(neighbourCell, 1); //Introduce neighbour count as 1
                 });
             });
-            
+
             List<FutureCellState> futureCellStates =
             deadCellsToCheck.entrySet().stream().filter(cellByteEntry -> cellByteEntry.getValue()==3)
                     .map(cellByteEntry -> new FutureCellState(cellByteEntry.getKey(), true, true)).collect(Collectors.toList());
@@ -100,6 +100,9 @@ public class StreamEngine implements IEngine {
 
     public void loadGrid(IGrid grid) {
         stopCalculation();
+
+        if(grid == null)
+            throw new IllegalArgumentException("Grid cannot be null.");
 
         synchronized(gameGrid){
             gameGrid = grid;
