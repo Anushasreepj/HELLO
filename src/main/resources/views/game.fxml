@@ -30,6 +30,14 @@
                 <Insets left="15" right="15" top="15" bottom="15"/>
             </BorderPane.margin>
             <UIZoomSlider id="zoomSlider" fx:id="zoomSlider"></UIZoomSlider>
+            <spacing>35</spacing>
+            <Button prefWidth="80" prefHeight="32" text="&#9632;  Reset" onAction="#navigateToMenu"/>
+            <spacing>10</spacing>
+            <Button prefWidth="80" prefHeight="32" text="&#10074;  Pause" onAction="#navigateToMenu"/>
+            <spacing>10</spacing>
+            <Button prefWidth="80" prefHeight="32" text="&#9654;  Start" onAction="#navigateToMenu"/>
+            <spacing>10</spacing>
+            <Button prefWidth="80" prefHeight="32" text="&#9654;&#9654;  Next" onAction="#navigateToMenu"/>
         </HBox>
     </bottom>
 </BorderPane>
