@@ -2,6 +2,9 @@ package de.hdm_stuttgart.mi.gameoflife.core;
 
 
 import de.hdm_stuttgart.mi.gameoflife.core.engine.Engine;
+import de.hdm_stuttgart.mi.gameoflife.core.engine.StreamEngine;
+import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineFactory;
+import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +22,11 @@ public class EngineTest {
 
     @Before
     public void EngineTest(){
-        engine = new Engine();
+        try{
+            engine = EngineFactory.loadByReflection(StreamEngine.class.getName());
+        } catch (EngineNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
