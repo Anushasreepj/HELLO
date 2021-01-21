@@ -56,15 +56,19 @@ public class GameController extends PageBaseController {
         logger.info("`Start` clicked");
 
         Timeline tick = new Timeline(
-            new KeyFrame(Duration.seconds(1),
+            new KeyFrame(Duration.millis(10),
             new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
-                logger.info("tick");
+                long startTime = System.nanoTime();
 
                 controller.nextStep();
                 updateGrid();
+
+                long elapsedTime = System.nanoTime() - startTime;
+                logger.info("tick, " + elapsedTime/1000000f + "ms.");
+
             }
         }));
 
