@@ -8,6 +8,7 @@
 <?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomableScrollPane?>
 <?import javafx.scene.shape.Box?>
 <?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomSlider?>
+<?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UISpeedSlider?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.GameController">
     <top>
         <HBox alignment="CENTER_LEFT">
@@ -25,11 +26,35 @@
         <HBox alignment="CENTER" id="wrapper" fx:id="wrapper"></HBox>
     </center>
     <bottom>
-        <HBox>
+        <VBox>
             <BorderPane.margin>
                 <Insets left="15" right="15" top="15" bottom="15"/>
             </BorderPane.margin>
-            <UIZoomSlider id="zoomSlider" fx:id="zoomSlider"></UIZoomSlider>
-        </HBox>
+            <HBox alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets left="15" right="15" top="15" bottom="15"/>
+                </BorderPane.margin>
+                <Button prefWidth="80" prefHeight="32" text="&#9632;  Reset" onAction="#navigateToMenu"/>
+                <spacing>10</spacing>
+                <Button prefWidth="80" prefHeight="32" text="&#10074;  Pause" onAction="#navigateToMenu"/>
+                <spacing>10</spacing>
+                <Button prefWidth="80" prefHeight="32" text="&#9654;  Start" onAction="#navigateToMenu"/>
+                <spacing>10</spacing>
+                <Button prefWidth="80" prefHeight="32" text="&#9654;&#9654;  Next" onAction="#navigateToMenu"/>
+                <spacing>10</spacing>
+                <Text>Generation: 0</Text>
+            </HBox>
+            <spacing>30</spacing>
+            <HBox alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets left="15" right="15" top="15" bottom="15"/>
+                </BorderPane.margin>
+                <Label>Zoom:</Label>
+                <UIZoomSlider id="zoomSlider" fx:id="zoomSlider"></UIZoomSlider>
+                <spacing>55</spacing>
+                <Label>Speed:</Label>
+                <UISpeedSlider id="speedSlider" fx:id="speedSlider"></UISpeedSlider>
+            </HBox>
+        </VBox>
     </bottom>
 </BorderPane>

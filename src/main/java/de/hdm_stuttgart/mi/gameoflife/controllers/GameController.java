@@ -1,6 +1,7 @@
 package de.hdm_stuttgart.mi.gameoflife.controllers;
 
 import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIGrid;
+import de.hdm_stuttgart.mi.gameoflife.controllers.components.UISpeedSlider;
 import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomSlider;
 import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomableScrollPane;
 import javafx.event.ActionEvent;
@@ -28,6 +29,9 @@ public class GameController extends PageBaseController {
 
     @FXML
     private UIZoomSlider zoomSlider;
+
+    @FXML
+    private UISpeedSlider speedSlider;
 
     public void initialize() {
         grid = new UIGrid();
