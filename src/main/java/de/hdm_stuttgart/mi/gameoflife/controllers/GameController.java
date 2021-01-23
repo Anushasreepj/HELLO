@@ -89,7 +89,7 @@ public class GameController extends PageBaseController {
         scrollPane = new UIZoomableScrollPane(grid);
         wrapper.getChildren().add(scrollPane);
 
-        scrollPane.setScaleValue(0.5);
+        scrollPane.setScaleValue(1);
 
         zoomSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             scrollPane.setScaleValue((double) newValue / 100);
