@@ -22,8 +22,6 @@ public class StreamEngine implements IEngine {
 
     private static final int msPerTick = 50; //Placeholder for reaching 20tps. TODO: Use Settings Object/Config to Control.
 
-    private Runnable timerTask = () -> nextGeneration();
-
     /**
      * Generates a Engine with a prefilled grid
      * @param grid The grid to use
@@ -39,11 +37,14 @@ public class StreamEngine implements IEngine {
         gameGrid = new Grid();
     }
 
-    public void startCalculation() {
-        startInterval(msPerTick);
-        logger.trace("Started automated Calculation");
-    }
+    public void startCalculation(Runnable onSuccess) {
+        startInterval(msPerTick, () -> {
+            nextGeneration();
 
+            // Notify caller that calculation step was successful
+            onSuccess.run();
+        });
+    }
 
     public void stopCalculation() {
         stopInterval();
@@ -118,7 +119,7 @@ public class StreamEngine implements IEngine {
      * Starts or Restarts the Interval
      * @param speed
      */
-    private void startInterval(long speed){
+    private void  startInterval(long speed, Runnable timerTask){
         timer = ses.scheduleAtFixedRate(timerTask,0, speed, TimeUnit.MILLISECONDS);
     }
 
@@ -126,6 +127,8 @@ public class StreamEngine implements IEngine {
      * Stops the Interval
      */
     private void stopInterval(){
-        timer.cancel(false);
+        if (timer != null) {
+            timer.cancel(false);
+        }
     }
 }

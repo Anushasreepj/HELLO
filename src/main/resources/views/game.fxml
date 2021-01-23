@@ -42,7 +42,10 @@
                 <spacing>10</spacing>
                 <Button prefWidth="80" prefHeight="32" text="&#9654;&#9654;  Next" onAction="#nextClicked"/>
                 <spacing>10</spacing>
-                <Text>Generation: 0</Text>
+                <HBox alignment="CENTER" prefWidth="150">
+                    <Text>Generation: </Text>
+                    <Text id="generationCount" fx:id="generationCount">0</Text>
+                </HBox>
             </HBox>
             <spacing>30</spacing>
             <HBox alignment="CENTER">

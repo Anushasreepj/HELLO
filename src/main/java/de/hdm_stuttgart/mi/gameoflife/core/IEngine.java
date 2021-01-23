@@ -6,7 +6,7 @@ public interface IEngine {
      * Starts automatic calculation.
      * TODO: Add Settings Object
      */
-    void startCalculation();
+    void startCalculation(Runnable onSuccess);
 
     /**
      * Will stop automatic calculation.

@@ -18,4 +18,6 @@ public interface IController {
     void setSpeed();
 
     Cell[] getAliveCells();
+
+    int getGenerationCount();
 }

@@ -9,6 +9,7 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +35,9 @@ public class GameController extends PageBaseController {
     @FXML
     private UISpeedSlider speedSlider;
 
+    @FXML
+    private Text generationCount;
+
     /**
      * Navigate back to menu button clicked
      *
@@ -54,6 +58,7 @@ public class GameController extends PageBaseController {
         logger.info("`Reset` clicked");
         stopFrameTickInterval();
         controller.reset();
+        resetGenerationCount();
     }
 
     /**
@@ -96,6 +101,7 @@ public class GameController extends PageBaseController {
         controller.nextStep();
 
         updateGrid();
+        updateGenerationCount();
     }
 
     /**
@@ -130,7 +136,10 @@ public class GameController extends PageBaseController {
         }
 
         // Create frame tick interval and update grid on each frame
-        createFrameTickInterval(60, () -> updateGrid());
+        createFrameTickInterval(60, () -> {
+            updateGrid();
+            updateGenerationCount();
+        });
     }
 
     /**
@@ -138,6 +147,20 @@ public class GameController extends PageBaseController {
      */
     private void updateGrid() {
         grid.update(controller.getAliveCells());
+    }
+
+    /**
+     * Get generationCount and update UI
+     */
+    private void updateGenerationCount() {
+        generationCount.setText(String.valueOf(controller.getGenerationCount()));
+    }
+
+    /**
+     * Get generationCount and update UI
+     */
+    private void resetGenerationCount() {
+        generationCount.setText("0");
     }
 
     /**

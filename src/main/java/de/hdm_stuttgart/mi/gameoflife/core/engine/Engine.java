@@ -34,20 +34,18 @@ public class Engine implements IEngine {
         gameGrid = new Grid();
     }
 
+    public void startCalculation(Runnable onSuccess) {
+        startInterval(msPerTick, () -> {
+            nextGeneration();
 
-
-    public void startCalculation() {
-        startInterval(msPerTick);
+            // Notify caller that calculation step was successful
+            onSuccess.run();
+        });
     }
-
 
     public void stopCalculation() {
         stopInterval();
     }
-
-    private Runnable timerTask = () -> nextGeneration();
-
-
 
     public void nextGeneration() {
         synchronized (gameGrid){ //locks gamegrid to let loadGamegrid() wait until this generation is completed
@@ -133,7 +131,7 @@ public class Engine implements IEngine {
      * Starts or Restarts the Interval
      * @param speed
      */
-    private void startInterval(long speed){
+    private void  startInterval(long speed, Runnable timerTask){
         timer = ses.scheduleAtFixedRate(timerTask,0, speed, TimeUnit.MILLISECONDS);
     }
 
@@ -141,7 +139,9 @@ public class Engine implements IEngine {
      * Stops the Interval
      */
     private void stopInterval(){
-        timer.cancel(false);
+        if (timer != null) {
+            timer.cancel(false);
+        }
     }
 }
 

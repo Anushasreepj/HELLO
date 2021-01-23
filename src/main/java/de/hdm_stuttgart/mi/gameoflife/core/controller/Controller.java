@@ -12,7 +12,7 @@ public class Controller implements IController {
     private IEngine engine;
     private IGrid gameGrid;
     private PlayState playState = PlayState.UNSET;
-    private int generationCount = 0;
+    private volatile int generationCount = 0; // Thread save
     private Editor editor = new Editor();
 
     public Controller() { }
@@ -27,37 +27,56 @@ public class Controller implements IController {
         gameGrid = editor.getGrid();
 
         // Initialize core engine with game grid
-        engine = EngineFactory.loadByName("streamengine", gameGrid);
+        engine = EngineFactory.loadByName("engine", gameGrid);
     }
 
     /**
-     * TODO
+     * Reset game state
+     *
+     * Todo
+     *
      */
     public void reset() {
         engine.stopCalculation();
+
+        // Reset generation count
+        generationCount = 0;
     }
 
     /**
-     * TODO
+     * Start game
      */
     public void start() {
-        engine.startCalculation();
+        engine.startCalculation(() -> {
+
+            // Increment generation count
+            generationCount++;
+        });
     }
 
     /**
-     * TODO
+     * Pause game
      */
     public void pause() {
         engine.stopCalculation();
 
     }
 
+    /**
+     * Trigger next generation
+     */
     public void nextStep() {
         engine.nextGeneration();
+
+        // Increment generation count
+        generationCount++;
     }
 
     /**
-     * TODO
+     * Update generation speed
+     *
+     * Todo
+     *
      */
     public void setSpeed() {
 
@@ -65,5 +84,9 @@ public class Controller implements IController {
 
     public Cell[] getAliveCells() {
         return gameGrid.getAliveCells();
+    }
+
+    public int getGenerationCount() {
+        return generationCount;
     }
 }
