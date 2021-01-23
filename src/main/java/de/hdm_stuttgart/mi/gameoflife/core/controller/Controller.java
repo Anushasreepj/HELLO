@@ -34,21 +34,21 @@ public class Controller implements IController {
      * TODO
      */
     public void reset() {
-        // engine.stopCalculation();
+        engine.stopCalculation();
     }
 
     /**
      * TODO
      */
     public void start() {
-        // engine.startCalculation();
+        engine.startCalculation();
     }
 
     /**
      * TODO
      */
     public void pause() {
-        // engine.stopCalculation();
+        engine.stopCalculation();
 
     }
 
