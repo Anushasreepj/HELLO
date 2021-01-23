@@ -20,6 +20,4 @@ public interface IController {
     void setSpeed();
 
     Cell[] getAliveCells();
-
-    void loadPreset(IPreset preset);
 }
