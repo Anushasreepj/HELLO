@@ -27,7 +27,7 @@ public class Controller implements IController {
         gameGrid = editor.getGrid();
 
         // Initialize core engine with game grid
-        engine = EngineFactory.loadByName("engine", gameGrid);
+        engine = EngineFactory.loadByName("streamengine", gameGrid);
     }
 
     /**
@@ -54,13 +54,6 @@ public class Controller implements IController {
 
     public void nextStep() {
         engine.nextGeneration();
-    }
-
-    /**
-     * TODO
-     */
-    public void setZoom() {
-
     }
 
     /**

@@ -6,14 +6,13 @@ import de.hdm_stuttgart.mi.gameoflife.core.IEngine;
 import de.hdm_stuttgart.mi.gameoflife.core.IGrid;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class Engine implements IEngine {
 
     private IGrid gameGrid = new Grid();
-    private Timer timer = new Timer();
+    private ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture<?> timer;
 
     private Stack<FutureCellState> changes = new Stack<FutureCellState>();
 
@@ -46,12 +45,8 @@ public class Engine implements IEngine {
         stopInterval();
     }
 
-    private TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            nextGeneration();
-        }
-    };
+    private Runnable timerTask = () -> nextGeneration();
+
 
 
     public void nextGeneration() {
@@ -139,16 +134,15 @@ public class Engine implements IEngine {
      * @param speed
      */
     private void startInterval(long speed){
-        timer.cancel();
-        timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask,0, speed);
+        timer = ses.scheduleAtFixedRate(timerTask,0, speed, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Stops the Interval
+     */
     private void stopInterval(){
-        timer.cancel();
+        timer.cancel(false);
     }
-
-
 }
 
 

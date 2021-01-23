@@ -64,8 +64,10 @@ public class GameController extends PageBaseController {
     @FXML
     private void pauseClicked(ActionEvent event) {
         logger.info("`Pause` clicked");
-        pauseFrameTickInterval();
+
         controller.pause();
+
+        pauseFrameTickInterval();
     }
 
     /**
