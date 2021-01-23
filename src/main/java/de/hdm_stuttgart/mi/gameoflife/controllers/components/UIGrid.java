@@ -19,6 +19,13 @@ public class UIGrid extends GridPane {
         }
     }
 
+    /**
+     * Update Grid UI
+     *
+     * Todo: Optimize, only apply changes
+     *
+     * @param aliveCells
+     */
     public void update(Cell[] aliveCells) {
 
         // Kill old cells
