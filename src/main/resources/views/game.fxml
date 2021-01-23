@@ -34,13 +34,13 @@
                 <BorderPane.margin>
                     <Insets left="15" right="15" top="15" bottom="15"/>
                 </BorderPane.margin>
-                <Button prefWidth="80" prefHeight="32" text="&#9632;  Reset" onAction="#navigateToMenu"/>
+                <Button prefWidth="80" prefHeight="32" text="&#9632;  Reset" onAction="#resetClicked"/>
                 <spacing>10</spacing>
-                <Button prefWidth="80" prefHeight="32" text="&#10074;  Pause" onAction="#navigateToMenu"/>
+                <Button prefWidth="80" prefHeight="32" text="&#10074;  Pause" onAction="#pauseClicked"/>
                 <spacing>10</spacing>
-                <Button prefWidth="80" prefHeight="32" text="&#9654;  Start" onAction="#navigateToMenu"/>
+                <Button prefWidth="80" prefHeight="32" text="&#9654;  Start" onAction="#startClicked"/>
                 <spacing>10</spacing>
-                <Button prefWidth="80" prefHeight="32" text="&#9654;&#9654;  Next" onAction="#navigateToMenu"/>
+                <Button prefWidth="80" prefHeight="32" text="&#9654;&#9654;  Next" onAction="#nextClicked"/>
                 <spacing>10</spacing>
                 <Text>Generation: 0</Text>
             </HBox>
