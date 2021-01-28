@@ -15,8 +15,6 @@ public class Engine implements IEngine {
 
     private Stack<FutureCellState> changes = new Stack<FutureCellState>();
 
-    private static final int msPerTick = 50; //Placeholder for reaching 20tps. TODO: Use Settings Object/Config to Control.
-
 
     /**
      * Generates a Engine with a prefilled grid
@@ -34,7 +32,7 @@ public class Engine implements IEngine {
     }
 
     public void startCalculation(Runnable onSuccess, SimulationSettings settings) {
-        startInterval(msPerTick, () -> {
+        startInterval(settings.getMsPerTick(), () -> {
             nextGeneration();
 
             // Notify caller that calculation step was successful

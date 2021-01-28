@@ -36,7 +36,7 @@ public class StreamEngine implements IEngine {
     }
 
     public void startCalculation(Runnable onSuccess, SimulationSettings settings) {
-        startInterval(msPerTick, () -> {
+        startInterval(settings.getMsPerTick(), () -> {
             nextGeneration();
 
             // Notify caller that calculation step was successful

@@ -14,6 +14,7 @@ public class Controller implements IController {
     private PlayState playState = PlayState.UNSET;
     private volatile int generationCount = 0; // Thread save
     private Editor editor = new Editor();
+    private SimulationSettings settings = new SimulationSettings();
 
     public Controller() { }
 
@@ -51,7 +52,7 @@ public class Controller implements IController {
 
             // Increment generation count
             generationCount++;
-        });
+        }, settings);
     }
 
     /**
@@ -78,8 +79,10 @@ public class Controller implements IController {
      * Todo
      *
      */
-    public void setSpeed() {
-
+    public void setSpeed(int msPerTick) {
+        engine.stopCalculation();
+        settings.setMsPerTick(msPerTick);
+        start();
     }
 
     public Cell[] getAliveCells() {

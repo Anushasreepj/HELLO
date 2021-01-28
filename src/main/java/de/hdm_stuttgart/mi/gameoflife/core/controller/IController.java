@@ -15,7 +15,7 @@ public interface IController {
 
     void nextStep();
 
-    void setSpeed();
+    void setSpeed(int msPerTick);
 
     Cell[] getAliveCells();
 

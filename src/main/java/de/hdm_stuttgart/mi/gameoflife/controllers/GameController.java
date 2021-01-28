@@ -124,6 +124,17 @@ public class GameController extends PageBaseController {
             scrollPane.setScaleValue((double) newValue / 100);
         });
 
+        speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            //Speed equals tps/fps.
+            //Speed 0 will basically add pause functionality at that point...
+
+            if(newValue.intValue()>0){
+                controller.setSpeed(1000/newValue.intValue());
+            } else {
+                controller.setSpeed(0);
+            }
+        });
+
         try {
             // Initialize engine controller here
             controller.init();
