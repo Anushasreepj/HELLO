@@ -10,7 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 
 public class UIZoomableScrollPane extends ScrollPane {
-    private double scaleValue = 0.7;
+    private double scaleValue = 1;
     private double zoomIntensity = 0.02;
     private Node target;
     private Node zoomNode;

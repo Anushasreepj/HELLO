@@ -7,19 +7,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class StreamEngine implements IEngine {
     private static final Logger logger = LogManager.getLogger(StreamEngine.class);
 
     private IGrid gameGrid;
-    private Timer timer = new Timer();
+    private ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture<?> timer;
 
     private static final int msPerTick = 50; //Placeholder for reaching 20tps. TODO: Use Settings Object/Config to Control.
-
-    private TimerTask timerTask = new TimerTask() {
-        public void run() { nextGeneration(); }
-    };
 
     /**
      * Generates a Engine with a prefilled grid
@@ -36,11 +37,14 @@ public class StreamEngine implements IEngine {
         gameGrid = new Grid();
     }
 
-    public void startCalculation() {
-        startInterval(msPerTick);
-        logger.trace("Started automated Calculation");
-    }
+    public void startCalculation(Runnable onSuccess) {
+        startInterval(msPerTick, () -> {
+            nextGeneration();
 
+            // Notify caller that calculation step was successful
+            onSuccess.run();
+        });
+    }
 
     public void stopCalculation() {
         stopInterval();
@@ -112,21 +116,19 @@ public class StreamEngine implements IEngine {
 
 
     /**
-     * Starts or Restarts the internal Interval
+     * Starts or Restarts the Interval
      * @param speed
      */
-    private void startInterval(long speed){
-        timer.cancel();
-        timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask,0, speed);
+    private void  startInterval(long speed, Runnable timerTask){
+        timer = ses.scheduleAtFixedRate(timerTask,0, speed, TimeUnit.MILLISECONDS);
     }
 
     /**
-     * Stops the internal Interval
+     * Stops the Interval
      */
     private void stopInterval(){
-        timer.cancel();
+        if (timer != null) {
+            timer.cancel(false);
+        }
     }
-
-
 }

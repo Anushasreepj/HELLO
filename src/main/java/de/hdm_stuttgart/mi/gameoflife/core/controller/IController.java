@@ -15,9 +15,9 @@ public interface IController {
 
     void nextStep();
 
-    void setZoom();
-
     void setSpeed();
 
     Cell[] getAliveCells();
+
+    int getGenerationCount();
 }
