@@ -1,12 +1,20 @@
 package de.hdm_stuttgart.mi.gameoflife.core;
 
+import de.hdm_stuttgart.mi.gameoflife.core.engine.FutureCellState;
+
 public interface IEngine {
 
     /**
      * Starts automatic calculation.
-     * TODO: Add Settings Object
+     * @param settings The settings object
      */
-    void startCalculation(Runnable onSuccess);
+    void startCalculation(Runnable onSuccess, SimulationSettings settings);
+
+    /**
+     * Loads in the settings for the engine.
+     * @param settings
+     */
+    void loadSettings(SimulationSettings settings);
 
     /**
      * Will stop automatic calculation.
@@ -24,4 +32,6 @@ public interface IEngine {
      * @param grid The new grid to use
      */
     void loadGrid(IGrid grid);
+
+    FutureCellState[] getChanges();
 }

@@ -1,6 +1,7 @@
 package de.hdm_stuttgart.mi.gameoflife.core.controller;
 
 import de.hdm_stuttgart.mi.gameoflife.core.*;
+import de.hdm_stuttgart.mi.gameoflife.core.engine.FutureCellState;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineFactory;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineNotFoundException;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +15,7 @@ public class Controller implements IController {
     private PlayState playState = PlayState.UNSET;
     private volatile int generationCount = 0; // Thread save
     private Editor editor = new Editor();
+    private SimulationSettings settings = new SimulationSettings();
 
     public Controller() { }
 
@@ -51,7 +53,7 @@ public class Controller implements IController {
 
             // Increment generation count
             generationCount++;
-        });
+        }, settings);
     }
 
     /**
@@ -59,7 +61,6 @@ public class Controller implements IController {
      */
     public void pause() {
         engine.stopCalculation();
-
     }
 
     /**
@@ -78,12 +79,14 @@ public class Controller implements IController {
      * Todo
      *
      */
-    public void setSpeed() {
-
+    public void setSpeed(int msPerTick) {
+        pause();
+        settings.setMsPerTick(msPerTick);
+        start();
     }
 
-    public Cell[] getAliveCells() {
-        return gameGrid.getAliveCells();
+    public FutureCellState[] getChangedCellStates() {
+        return engine.getChanges();
     }
 
     public int getGenerationCount() {

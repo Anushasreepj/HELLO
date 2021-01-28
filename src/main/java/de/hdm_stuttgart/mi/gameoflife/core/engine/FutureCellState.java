@@ -5,7 +5,7 @@ import de.hdm_stuttgart.mi.gameoflife.core.Cell;
 /**
  * A class representing the state of a cell for the coming generation
  */
-class FutureCellState {
+public class FutureCellState {
     private Cell cell;
     private boolean alive = true;
     private boolean changed = false;

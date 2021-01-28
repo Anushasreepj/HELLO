@@ -1,8 +1,5 @@
 package de.hdm_stuttgart.mi.gameoflife.core.engine;
-import de.hdm_stuttgart.mi.gameoflife.core.Cell;
-import de.hdm_stuttgart.mi.gameoflife.core.Grid;
-import de.hdm_stuttgart.mi.gameoflife.core.IEngine;
-import de.hdm_stuttgart.mi.gameoflife.core.IGrid;
+import de.hdm_stuttgart.mi.gameoflife.core.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,6 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StreamEngine implements IEngine {
     private static final Logger logger = LogManager.getLogger(StreamEngine.class);
@@ -20,7 +18,10 @@ public class StreamEngine implements IEngine {
     private ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
     private ScheduledFuture<?> timer;
 
-    private static final int msPerTick = 50; //Placeholder for reaching 20tps. TODO: Use Settings Object/Config to Control.
+    private boolean calculateParallel;
+    private HashSet<FutureCellState> changes = new HashSet<FutureCellState>();
+
+    private SimulationSettings settings = new SimulationSettings();
 
     /**
      * Generates a Engine with a prefilled grid
@@ -37,14 +38,23 @@ public class StreamEngine implements IEngine {
         gameGrid = new Grid();
     }
 
-    public void startCalculation(Runnable onSuccess) {
-        startInterval(msPerTick, () -> {
+    public void startCalculation(Runnable onSuccess, SimulationSettings settings) {
+        startInterval(settings.getMsPerTick(), () -> {
             nextGeneration();
 
             // Notify caller that calculation step was successful
             onSuccess.run();
         });
+
+        this.settings = settings;
+        calculateParallel = settings.getParallelCalculations();
     }
+
+
+    public void loadSettings(SimulationSettings settings) {
+        calculateParallel = settings.getParallelCalculations();
+    }
+
 
     public void stopCalculation() {
         stopInterval();
@@ -77,25 +87,34 @@ public class StreamEngine implements IEngine {
 
 
             //2. Check for deaths
-            futureCellStates.addAll(Arrays.stream(gameGrid.getAliveCells())
-                    .parallel()
-                    .map(cell ->
-            {
-                FutureCellState futureCellState = new FutureCellState(cell,true);
+            Stream<Cell> aliveCellStream = Arrays.stream(gameGrid.getAliveCells());
 
-                byte aliveNeighbourCount = (byte) cell.getNeighbours().stream().filter(neighbourCell -> gameGrid.getState(neighbourCell)).count();
-
-                if(aliveNeighbourCount<2 | aliveNeighbourCount>3) futureCellState.setAlive(false);
-                return futureCellState;
-
+            if (calculateParallel){
+                aliveCellStream = aliveCellStream.parallel();
             }
-            ).collect(Collectors.toList()));
+
+            futureCellStates.addAll(aliveCellStream
+                    .map(cell ->
+                            {
+                                FutureCellState futureCellState = new FutureCellState(cell,true);
+
+                                byte aliveNeighbourCount = (byte) cell.getNeighbours().stream().filter(neighbourCell -> gameGrid.getState(neighbourCell)).count();
+
+                                if(aliveNeighbourCount<2 | aliveNeighbourCount>3) futureCellState.setAlive(false);
+                                return futureCellState;
+
+                            }
+                    ).collect(Collectors.toList()));
 
 
             //3. Apply Changes
-            futureCellStates.stream().filter(futureCellState -> futureCellState.isChanged()).forEach(futureCellState -> {
-                gameGrid.setState(futureCellState.getCell(), futureCellState.isAlive());
-            });
+            synchronized (changes){
+                futureCellStates.stream().filter(futureCellState -> futureCellState.isChanged()).forEach(futureCellState -> {
+                    if(settings.isInBounds(futureCellState.getCell())) changes.add(futureCellState);
+
+                    gameGrid.setState(futureCellState.getCell(), futureCellState.isAlive());
+                });
+            }
 
             logger.trace("Finished calculating next generation");
         }
@@ -112,6 +131,15 @@ public class StreamEngine implements IEngine {
             gameGrid = grid;
         }
         logger.trace("Replaced game grid");
+    }
+
+    @Override
+    public FutureCellState[] getChanges() {
+        synchronized (changes){
+            FutureCellState[] returnValue = changes.toArray(new FutureCellState[0]);
+            changes.clear();
+            return returnValue;
+        }
     }
 
 

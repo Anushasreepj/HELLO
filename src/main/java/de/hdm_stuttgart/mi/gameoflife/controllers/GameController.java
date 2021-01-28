@@ -124,6 +124,18 @@ public class GameController extends PageBaseController {
             scrollPane.setScaleValue((double) newValue / 100);
         });
 
+        speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            //Speed equals tps/fps.
+            //Speed 0 will basically add pause functionality at that point...
+
+            if(newValue.intValue() > 0){
+                controller.setSpeed(1000/newValue.intValue());
+            } else {
+                //Can't set to 0 or lower. Just pause the simulation, it will be restarted automatically once this number is > 0 again.
+                controller.pause();
+            }
+        });
+
         try {
             // Initialize engine controller here
             controller.init();
@@ -146,7 +158,7 @@ public class GameController extends PageBaseController {
      * Get alive cells from engine controller and update UI grid
      */
     private void updateGrid() {
-        grid.update(controller.getAliveCells());
+        grid.update(controller.getChangedCellStates());
     }
 
     /**

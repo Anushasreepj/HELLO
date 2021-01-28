@@ -1,9 +1,6 @@
 package de.hdm_stuttgart.mi.gameoflife.core.engine;
 
-import de.hdm_stuttgart.mi.gameoflife.core.Cell;
-import de.hdm_stuttgart.mi.gameoflife.core.Grid;
-import de.hdm_stuttgart.mi.gameoflife.core.IEngine;
-import de.hdm_stuttgart.mi.gameoflife.core.IGrid;
+import de.hdm_stuttgart.mi.gameoflife.core.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -14,10 +11,11 @@ public class Engine implements IEngine {
     private ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
     private ScheduledFuture<?> timer;
 
-    private Stack<FutureCellState> changes = new Stack<FutureCellState>();
+    private boolean calculateParallel;
 
-    private static final int msPerTick = 50; //Placeholder for reaching 20tps. TODO: Use Settings Object/Config to Control.
+    private HashSet<FutureCellState> changes = new HashSet<FutureCellState>();
 
+    private SimulationSettings settings = new SimulationSettings();
 
     /**
      * Generates a Engine with a prefilled grid
@@ -34,14 +32,21 @@ public class Engine implements IEngine {
         gameGrid = new Grid();
     }
 
-    public void startCalculation(Runnable onSuccess) {
-        startInterval(msPerTick, () -> {
+    public void startCalculation(Runnable onSuccess, SimulationSettings settings) {
+        startInterval(settings.getMsPerTick(), () -> {
             nextGeneration();
 
             // Notify caller that calculation step was successful
             onSuccess.run();
         });
+        this.settings = settings;
+        calculateParallel = settings.getParallelCalculations();
     }
+
+    public void loadSettings(SimulationSettings settings) {
+        calculateParallel = settings.getParallelCalculations();
+    }
+
 
     public void stopCalculation() {
         stopInterval();
@@ -76,10 +81,15 @@ public class Engine implements IEngine {
                     }
                 }
 
+
                 StateCalculatorRunnable stateCalculator = new StateCalculatorRunnable(cell,gameGrid);
                 futureCellStates.add(stateCalculator.futureCellState);
 
-                es.execute(stateCalculator);
+                if(calculateParallel){
+                    es.execute(stateCalculator);
+                } else {
+                    stateCalculator.run();
+                }
             }
 
 
@@ -101,16 +111,19 @@ public class Engine implements IEngine {
 
             // Execute changes.
 
-            for (FutureCellState state: futureCellStates) {
-                if(state.isChanged()){
-                    changes.add(state);
-                    gameGrid.setState(state.getCell(), state.isAlive());
+            synchronized (changes){
+                for (FutureCellState state: futureCellStates) {
+                    if(state.isChanged()){
+                        if(settings.isInBounds(state.getCell())) changes.add(state);
+
+                        gameGrid.setState(state.getCell(), state.isAlive());
+                    }
                 }
             }
         }
     }
 
-    @Override
+    
     public void loadGrid(IGrid grid) {
         stopCalculation();
 
@@ -124,6 +137,15 @@ public class Engine implements IEngine {
 
         //startCalculation(); ??
 
+    }
+
+
+    public FutureCellState[] getChanges() {
+        synchronized (changes){
+            FutureCellState[] returnValue = changes.toArray(new FutureCellState[0]);
+            changes.clear();
+            return returnValue;
+        }
     }
 
 
