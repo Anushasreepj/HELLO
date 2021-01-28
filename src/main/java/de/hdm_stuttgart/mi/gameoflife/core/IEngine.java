@@ -6,7 +6,7 @@ public interface IEngine {
      * Starts automatic calculation.
      * @param settings The settings object
      */
-    void startCalculation(SimulationSettings settings);
+    void startCalculation(Runnable onSuccess, SimulationSettings settings);
 
     /**
      * Loads in the settings for the engine.

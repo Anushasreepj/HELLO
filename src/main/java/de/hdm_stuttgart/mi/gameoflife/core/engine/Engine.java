@@ -3,14 +3,13 @@ package de.hdm_stuttgart.mi.gameoflife.core.engine;
 import de.hdm_stuttgart.mi.gameoflife.core.*;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class Engine implements IEngine {
 
     private IGrid gameGrid = new Grid();
-    private Timer timer = new Timer();
+    private ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture<?> timer;
 
     private boolean calculateParallel;
 
@@ -34,13 +33,16 @@ public class Engine implements IEngine {
         gameGrid = new Grid();
     }
 
+    public void startCalculation(Runnable onSuccess, SimulationSettings settings) {
+        startInterval(msPerTick, () -> {
+            nextGeneration();
 
-
-    public void startCalculation(SimulationSettings settings) {
+            // Notify caller that calculation step was successful
+            onSuccess.run();
+        });
+        
         calculateParallel = settings.getParallelCalculations();
-        startInterval(settings.getMsPerTick());
     }
-
 
     public void loadSettings(SimulationSettings settings) {
         calculateParallel = settings.getParallelCalculations();
@@ -50,14 +52,6 @@ public class Engine implements IEngine {
     public void stopCalculation() {
         stopInterval();
     }
-
-    private TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            nextGeneration();
-        }
-    };
-
 
     public void nextGeneration() {
         synchronized (gameGrid){ //locks gamegrid to let loadGamegrid() wait until this generation is completed
@@ -127,7 +121,7 @@ public class Engine implements IEngine {
         }
     }
 
-    @Override
+    
     public void loadGrid(IGrid grid) {
         stopCalculation();
 
@@ -148,17 +142,18 @@ public class Engine implements IEngine {
      * Starts or Restarts the Interval
      * @param speed
      */
-    private void startInterval(long speed){
-        timer.cancel();
-        timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask,0, speed);
+    private void  startInterval(long speed, Runnable timerTask){
+        timer = ses.scheduleAtFixedRate(timerTask,0, speed, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Stops the Interval
+     */
     private void stopInterval(){
-        timer.cancel();
+        if (timer != null) {
+            timer.cancel(false);
+        }
     }
-
-
 }
 
 
