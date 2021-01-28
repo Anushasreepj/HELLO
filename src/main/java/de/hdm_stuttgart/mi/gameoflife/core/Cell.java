@@ -3,7 +3,7 @@ package de.hdm_stuttgart.mi.gameoflife.core;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cell {
+public class Cell{
     private int x;
     private int y;
 

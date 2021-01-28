@@ -19,6 +19,9 @@ public class StreamEngine implements IEngine {
     private ScheduledFuture<?> timer;
 
     private boolean calculateParallel;
+    private HashSet<FutureCellState> changes = new HashSet<FutureCellState>();
+
+    private SimulationSettings settings = new SimulationSettings();
 
     /**
      * Generates a Engine with a prefilled grid
@@ -42,7 +45,8 @@ public class StreamEngine implements IEngine {
             // Notify caller that calculation step was successful
             onSuccess.run();
         });
-        
+
+        this.settings = settings;
         calculateParallel = settings.getParallelCalculations();
     }
 
@@ -104,9 +108,13 @@ public class StreamEngine implements IEngine {
 
 
             //3. Apply Changes
-            futureCellStates.stream().filter(futureCellState -> futureCellState.isChanged()).forEach(futureCellState -> {
-                gameGrid.setState(futureCellState.getCell(), futureCellState.isAlive());
-            });
+            synchronized (changes){
+                futureCellStates.stream().filter(futureCellState -> futureCellState.isChanged()).forEach(futureCellState -> {
+                    if(settings.isInBounds(futureCellState.getCell())) changes.add(futureCellState);
+
+                    gameGrid.setState(futureCellState.getCell(), futureCellState.isAlive());
+                });
+            }
 
             logger.trace("Finished calculating next generation");
         }
@@ -123,6 +131,15 @@ public class StreamEngine implements IEngine {
             gameGrid = grid;
         }
         logger.trace("Replaced game grid");
+    }
+
+    @Override
+    public FutureCellState[] getChanges() {
+        synchronized (changes){
+            FutureCellState[] returnValue = changes.toArray(new FutureCellState[0]);
+            changes.clear();
+            return returnValue;
+        }
     }
 
 

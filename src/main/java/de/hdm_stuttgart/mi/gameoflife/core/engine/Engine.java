@@ -13,8 +13,9 @@ public class Engine implements IEngine {
 
     private boolean calculateParallel;
 
-    private Stack<FutureCellState> changes = new Stack<FutureCellState>();
+    private HashSet<FutureCellState> changes = new HashSet<FutureCellState>();
 
+    private SimulationSettings settings = new SimulationSettings();
 
     /**
      * Generates a Engine with a prefilled grid
@@ -38,7 +39,7 @@ public class Engine implements IEngine {
             // Notify caller that calculation step was successful
             onSuccess.run();
         });
-        
+        this.settings = settings;
         calculateParallel = settings.getParallelCalculations();
     }
 
@@ -110,10 +111,13 @@ public class Engine implements IEngine {
 
             // Execute changes.
 
-            for (FutureCellState state: futureCellStates) {
-                if(state.isChanged()){
-                    changes.add(state);
-                    gameGrid.setState(state.getCell(), state.isAlive());
+            synchronized (changes){
+                for (FutureCellState state: futureCellStates) {
+                    if(state.isChanged()){
+                        if(settings.isInBounds(state.getCell())) changes.add(state);
+
+                        gameGrid.setState(state.getCell(), state.isAlive());
+                    }
                 }
             }
         }
@@ -133,6 +137,15 @@ public class Engine implements IEngine {
 
         //startCalculation(); ??
 
+    }
+
+
+    public FutureCellState[] getChanges() {
+        synchronized (changes){
+            FutureCellState[] returnValue = changes.toArray(new FutureCellState[0]);
+            changes.clear();
+            return returnValue;
+        }
     }
 
 

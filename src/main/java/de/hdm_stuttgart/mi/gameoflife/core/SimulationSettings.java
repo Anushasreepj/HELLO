@@ -4,8 +4,8 @@ public class SimulationSettings {
 
     //Basic Setting targeted towards optimization
     //Settings for the area the engine should provide updates for, since anything not rendered doesn't need to get processed by the UI.
-    private Cell bottomLeftViewCorner = new Cell(-100, -100);
-    private Cell topRightViewCorner = new Cell(100, 100);
+    private Cell bottomRightBound = new Cell(500, 500);
+    private Cell topLeftBound = new Cell(-500, -500);
 
     /**
      * Sets the corners for the area the engine shall provide updates for. The corners can be any two non-adjacent corners.
@@ -18,24 +18,34 @@ public class SimulationSettings {
         int y1 = corner1.getY();
         int y2 = corner2.getY();
 
-        bottomLeftViewCorner = new Cell(Math.min(x1,x2), Math.min(y1,y2));
-        topRightViewCorner = new Cell(Math.max(x1,x2), Math.max(y1,y2));
+        bottomRightBound = new Cell(Math.max(x1,x2), Math.max(y1,y2));
+        topLeftBound = new Cell(Math.min(x1,x2), Math.min(y1,y2));
+    }
+
+    /**
+     * Returns whether a cell is inside the bounds or not.
+     * @param cell Cell to check
+     * @return Is Cell in Bounds?
+     */
+    public boolean isInBounds(Cell cell){
+        return (cell.getX() > topLeftBound.getX() && cell.getY() > topLeftBound.getY()) &&
+                (cell.getX() < bottomRightBound.getX() && cell.getY() < bottomRightBound.getY());
     }
 
     /**
      *
      * @return The Bottom Left Corner of the area the engine shall provide updates for
      */
-    public Cell getBottomLeftViewCorner(){
-        return bottomLeftViewCorner;
+    public Cell getBottomRightBound(){
+        return bottomRightBound;
     }
 
     /**
      *
      * @return The Top Right Corner of the area the engine shall provide updates for
      */
-    public Cell getTopRightViewCorner(){
-        return topRightViewCorner;
+    public Cell getTopLeftBound(){
+        return topLeftBound;
     }
 
 

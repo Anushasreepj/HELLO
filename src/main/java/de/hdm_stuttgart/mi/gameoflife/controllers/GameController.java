@@ -128,10 +128,11 @@ public class GameController extends PageBaseController {
             //Speed equals tps/fps.
             //Speed 0 will basically add pause functionality at that point...
 
-            if(newValue.intValue()>0){
+            if(newValue.intValue() > 0){
                 controller.setSpeed(1000/newValue.intValue());
             } else {
-                controller.setSpeed(0);
+                //Can't set to 0 or lower. Just pause the simulation, it will be restarted automatically once this number is > 0 again.
+                controller.pause();
             }
         });
 
@@ -157,7 +158,7 @@ public class GameController extends PageBaseController {
      * Get alive cells from engine controller and update UI grid
      */
     private void updateGrid() {
-        grid.update(controller.getAliveCells());
+        grid.update(controller.getChangedCellStates());
     }
 
     /**

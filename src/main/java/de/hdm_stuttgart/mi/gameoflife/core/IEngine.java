@@ -1,5 +1,7 @@
 package de.hdm_stuttgart.mi.gameoflife.core;
 
+import de.hdm_stuttgart.mi.gameoflife.core.engine.FutureCellState;
+
 public interface IEngine {
 
     /**
@@ -30,4 +32,6 @@ public interface IEngine {
      * @param grid The new grid to use
      */
     void loadGrid(IGrid grid);
+
+    FutureCellState[] getChanges();
 }
