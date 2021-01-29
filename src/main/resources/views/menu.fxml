@@ -3,8 +3,42 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.MenuController" alignment="CENTER">
-    <Label text="Menu"/>
-    <Button text="Start Game" onAction="#navigateToGame"/>
-    <Button text="Tutorial" onAction="#navigateToTutorial"/>
+<?import java.net.URL?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.MenuController" alignment="CENTER" styleClass="main">
+    <BorderPane.margin>
+        <Insets left="15" right="15" top="15" bottom="15"/>
+    </BorderPane.margin>
+    <ImageView fx:id="imageView"
+               fitHeight="150.0"
+               fitWidth="500.0"
+               layoutX="61.0"
+               layoutY="83.0"
+               pickOnBounds="true"
+               preserveRatio="true">
+        <image>
+            <Image url="@../images/logo_1.png" backgroundLoading="true" />
+        </image>
+    </ImageView>
+    <spacing>50</spacing>
+    <HBox alignment="CENTER">
+        <BorderPane.margin>
+            <Insets left="15" right="15" top="15" bottom="15"/>
+        </BorderPane.margin>
+        <Button text="Start Game" onAction="#navigateToGame"/>
+        <spacing>30</spacing>
+        <Button text="Tutorial" onAction="#navigateToTutorial"/>
+    </HBox>
+    <spacing>70</spacing>
+    <VBox alignment="CENTER">
+        <Text styleClass="quote">“Becoming sufficiently familiar with something is a substitute for understanding it.”</Text>
+        <spacing>5</spacing>
+        <Text styleClass="quote">― John Conway</Text>
+    </VBox>
+    <stylesheets>
+        <URL value="@../styles/main.css" />
+    </stylesheets>
 </VBox>

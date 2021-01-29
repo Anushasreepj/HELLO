@@ -39,6 +39,6 @@ public class Main extends Application {
         router.addPath("game", "views/game.fxml");
         router.addPath("tutorial", "views/tutorial.fxml");
 
-        router.navigate("game");
+        router.navigate("menu");
     }
 }

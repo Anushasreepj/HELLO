@@ -9,7 +9,10 @@
 <?import javafx.scene.shape.Box?>
 <?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIZoomSlider?>
 <?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UISpeedSlider?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.GameController">
+<?import java.net.URL?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.GameController" styleClass="main">
     <top>
         <HBox alignment="CENTER_LEFT">
             <BorderPane.margin>
@@ -17,7 +20,17 @@
             </BorderPane.margin>
             <Button prefHeight="32" text="Back" onAction="#navigateToMenu"/>
             <spacing>15</spacing>
-            <Text>Conway's Game of Life</Text>
+            <ImageView fx:id="imageView"
+                       fitHeight="150.0"
+                       fitWidth="400.0"
+                       layoutX="61.0"
+                       layoutY="83.0"
+                       pickOnBounds="true"
+                       preserveRatio="true">
+                <image>
+                    <Image url="@../images/logo_1.png" backgroundLoading="true" />
+                </image>
+            </ImageView>
         </HBox>
     </top>
     <left></left>
@@ -60,4 +73,7 @@
             </HBox>
         </VBox>
     </bottom>
+    <stylesheets>
+        <URL value="@../styles/main.css" />
+    </stylesheets>
 </BorderPane>
