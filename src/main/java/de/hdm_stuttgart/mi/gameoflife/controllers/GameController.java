@@ -14,6 +14,9 @@ import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 public class GameController extends PageBaseController {
     private static final Logger logger = LogManager.getLogger(GameController.class);
 
@@ -22,6 +25,9 @@ public class GameController extends PageBaseController {
 
     @FXML
     private UIGrid grid;
+
+    @FXML
+    private UIEditor editor;
 
     @FXML
     private HBox wrapper;
@@ -37,6 +43,7 @@ public class GameController extends PageBaseController {
 
     @FXML
     private Text generationCount;
+
 
     /**
      * Navigate back to menu button clicked
@@ -151,6 +158,15 @@ public class GameController extends PageBaseController {
         createFrameTickInterval(60, () -> {
             updateGrid();
             updateGenerationCount();
+        });
+
+        // Setup editor
+        final Collection<String> defaultPresets = Arrays.asList("Light Weight Space Ship", "Blinker", "Square", "Small Tub", "Hive");
+        editor.addPresets(defaultPresets);
+        editor.registerPresetsSelectChangedListener((presetName) -> {
+            logger.info(presetName);
+            controller.loadPreset(presetName, 25, 12);
+            controller.nextStep();
         });
     }
 

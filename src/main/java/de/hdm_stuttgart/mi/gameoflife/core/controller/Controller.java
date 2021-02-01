@@ -23,13 +23,37 @@ public class Controller implements IController {
         logger.info("Initialize Controller");
 
         // Load a preset from standardPreset factory
-        editor.loadPreset(StandardPreset.getBlinker());
+        loadPreset("Blinker", 25, 12);
 
         // Get game grid
         gameGrid = editor.getGrid();
 
         // Initialize core engine with game grid
         engine = EngineFactory.loadByName("engine", gameGrid);
+    }
+
+    public void loadPreset(final String presetName, final int offsetX, final int offsetY) {
+        StandardPreset preset;
+
+        switch (presetName) {
+            case "Light Weight Space Ship":
+                preset = StandardPreset.getLightWeightSpaceShip();
+                break;
+            case "Blinker":
+                preset = StandardPreset.getBlinker();
+                break;
+            case "Square":
+                preset = StandardPreset.getSquare();
+                break;
+            case "Small Tub":
+                preset = StandardPreset.getShortTub();
+                break;
+            case "Hive":
+            default:
+                preset = StandardPreset.getHive();
+        }
+
+        editor.loadPresetOffset(StandardPreset.getBlinker(), offsetX, offsetY);
     }
 
     /**

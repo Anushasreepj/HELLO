@@ -12,6 +12,8 @@
 <?import java.net.URL?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIEditor?>
+<?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIPresetsSelect?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.GameController" styleClass="main">
     <top>
         <HBox alignment="CENTER_LEFT">
@@ -34,7 +36,13 @@
         </HBox>
     </top>
     <left></left>
-    <right></right>
+    <right>
+        <UIEditor id="editor" fx:id="editor" alignment="TOP_CENTER" minWidth="170">
+            <BorderPane.margin>
+                <Insets left="15" right="15" top="15" bottom="15"/>
+            </BorderPane.margin>
+        </UIEditor>
+    </right>
     <center>
         <HBox alignment="CENTER" id="wrapper" fx:id="wrapper"></HBox>
     </center>
