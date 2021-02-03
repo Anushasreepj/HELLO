@@ -99,9 +99,6 @@ public class GameController extends PageBaseController {
         logger.info("`Next` clicked");
 
         controller.nextStep();
-
-        //updateGrid();
-        //updateGenerationCount();
     }
 
     /**
@@ -153,7 +150,7 @@ public class GameController extends PageBaseController {
             int cellX = (int) Math.ceil(event.getX()/grid.getTotalCellSize()) - 1 + controller.getTopLeftBound().getX();
             int cellY = (int) Math.ceil(event.getY()/grid.getTotalCellSize()) - 1 + controller.getTopLeftBound().getY();
 
-            System.out.println(cellX + "/" + cellY);
+            logger.info("Cell clicked: " + cellX + "|" + cellY);
 
 
             controller.scheduleCellStateFlip(new Cell(cellX, cellY));
