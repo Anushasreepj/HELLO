@@ -11,8 +11,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class EngineTest {
@@ -91,7 +90,7 @@ public class EngineTest {
             assertTrue(grid.getState(cell));
         }
 
-        assertTrue(grid.getAliveCells().length==(square.length+smallTub.length+hive.length));
+        assertEquals(grid.getAliveCells().length, (square.length + smallTub.length + hive.length));
 
     }
 
@@ -126,7 +125,7 @@ public class EngineTest {
             assertTrue(grid.getState(cell));
         }
 
-        assertTrue(grid.getAliveCells().length==targetPositions.length);
+        assertEquals(grid.getAliveCells().length, targetPositions.length);
     }
 
     @Test
@@ -161,7 +160,7 @@ public class EngineTest {
             assertTrue(grid.getState(cell));
         }
 
-        assertTrue(grid.getAliveCells().length==expected.length);
+        assertEquals(grid.getAliveCells().length, expected.length);
     }
 
     @Test
@@ -183,7 +182,7 @@ public class EngineTest {
 
         engine.nextGeneration();
 
-        assertTrue(grid.getAliveCells().length == 0);
+        assertEquals(0, grid.getAliveCells().length);
     }
 
 

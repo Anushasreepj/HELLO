@@ -4,6 +4,7 @@ import de.hdm_stuttgart.mi.gameoflife.core.presets.StandardPreset;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class EditorTest {
@@ -26,7 +27,7 @@ public class EditorTest {
         for (Cell cell: spaceShip.getCells()) {
             assertTrue(grid.getState(cell));
         }
-        assertTrue(grid.getAliveCells().length==spaceShip.getCells().length);
+        assertEquals(grid.getAliveCells().length, spaceShip.getCells().length);
     }
 
     @Test
@@ -39,6 +40,6 @@ public class EditorTest {
         for (Cell cell: tub.getCells()) {
             assertTrue(grid.getState(cell));
         }
-        assertTrue(grid.getAliveCells().length==tub.getCells().length);
+        assertEquals(grid.getAliveCells().length, tub.getCells().length);
     }
 }
