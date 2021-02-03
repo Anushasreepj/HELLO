@@ -142,13 +142,14 @@ public class Engine implements IEngine {
 
             synchronized (changes){
                 for (FutureCellState state: futureCellStates) {
-                    if(state.isChanged()){
+                    if(state.isChanged() || settings.isUninitialized()){
                         if(settings.isInBounds(state.getCell())) changes.add(state);
 
                         gameGrid.setState(state.getCell(), state.isAlive());
                     }
                 }
             }
+            settings.setUninitialized(false);
         }
     }
 

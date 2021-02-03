@@ -135,14 +135,14 @@ public class StreamEngine implements IEngine {
 
             //3. Apply Changes
             synchronized (changes){
-                futureCellStates.stream().filter(futureCellState -> futureCellState.isChanged()).forEach(futureCellState -> {
+                futureCellStates.stream().filter(futureCellState -> futureCellState.isChanged() || settings.isUninitialized()).forEach(futureCellState -> {
                     if(settings.isInBounds(futureCellState.getCell())) changes.add(futureCellState);
 
                     gameGrid.setState(futureCellState.getCell(), futureCellState.isAlive());
                 });
 
             }
-
+            settings.setUninitialized(false);
             logger.trace("Finished calculating next generation");
         }
     }
