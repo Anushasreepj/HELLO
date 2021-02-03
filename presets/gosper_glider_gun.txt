@@ -1,5 +1,6 @@
 !Name: Gosper Glider Gun
 !One of the most basic glider guns in gol.
+!https://www.conwaylife.com/ref/lexicon/lex.htm
 ........................O...........
 ......................O.O...........
 ............OO......OO............OO
