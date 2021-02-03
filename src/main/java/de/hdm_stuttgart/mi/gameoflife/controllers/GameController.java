@@ -1,6 +1,7 @@
 package de.hdm_stuttgart.mi.gameoflife.controllers;
 
 import de.hdm_stuttgart.mi.gameoflife.controllers.components.*;
+import de.hdm_stuttgart.mi.gameoflife.core.Cell;
 import de.hdm_stuttgart.mi.gameoflife.core.controller.Controller;
 import de.hdm_stuttgart.mi.gameoflife.core.controller.IController;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineNotFoundException;
@@ -56,7 +57,6 @@ public class GameController extends PageBaseController {
     @FXML
     private void resetClicked(ActionEvent event) {
         logger.info("`Reset` clicked");
-        stopFrameTickInterval();
         controller.reset();
         resetGenerationCount();
     }
@@ -72,7 +72,7 @@ public class GameController extends PageBaseController {
 
         controller.pause();
 
-        pauseFrameTickInterval();
+        //pauseFrameTickInterval();
     }
 
     /**
@@ -86,7 +86,7 @@ public class GameController extends PageBaseController {
 
         controller.start();
 
-        startFrameTickInterval();
+        //startFrameTickInterval();
     }
 
     /**
@@ -100,8 +100,8 @@ public class GameController extends PageBaseController {
 
         controller.nextStep();
 
-        updateGrid();
-        updateGenerationCount();
+        //updateGrid();
+        //updateGenerationCount();
     }
 
     /**
@@ -136,22 +136,37 @@ public class GameController extends PageBaseController {
             }
         });
 
+
         try {
             // Initialize engine controller here
             controller.init();
 
             // Update Grid
             this.updateGrid();
+            logger.info("update grid");
 
         } catch (EngineNotFoundException e) {
             logger.error("Error while initializing engine");
         }
+
+        grid.setOnMouseClicked(event -> {
+            int cellX = (int) Math.ceil(event.getX()/grid.getTotalCellSize()) - 1 + controller.getTopLeftBound().getX();
+            int cellY = (int) Math.ceil(event.getY()/grid.getTotalCellSize()) - 1 + controller.getTopLeftBound().getY();
+
+            System.out.println(cellX + "/" + cellY);
+
+
+            controller.scheduleCellStateFlip(new Cell(cellX, cellY));
+        });
 
         // Create frame tick interval and update grid on each frame
         createFrameTickInterval(60, () -> {
             updateGrid();
             updateGenerationCount();
         });
+
+        startFrameTickInterval();
+
     }
 
     /**
