@@ -5,7 +5,7 @@ public class SimulationSettings {
     //Basic Setting targeted towards optimization
     //Settings for the area the engine should provide updates for, since anything not rendered doesn't need to get processed by the UI.
     private Cell bottomRightBound = new Cell(500, 500);
-    private Cell topLeftBound = new Cell(-500, -500);
+    private Cell topLeftBound = new Cell(0, -0);
 
     /**
      * Sets the corners for the area the engine shall provide updates for. The corners can be any two non-adjacent corners.
@@ -28,8 +28,8 @@ public class SimulationSettings {
      * @return Is Cell in Bounds?
      */
     public boolean isInBounds(Cell cell){
-        return (cell.getX() > topLeftBound.getX() && cell.getY() > topLeftBound.getY()) &&
-                (cell.getX() < bottomRightBound.getX() && cell.getY() < bottomRightBound.getY());
+        return (cell.getX() >= topLeftBound.getX() && cell.getY() >= topLeftBound.getY()) &&
+                (cell.getX() <= bottomRightBound.getX() && cell.getY() <= bottomRightBound.getY());
     }
 
     /**
