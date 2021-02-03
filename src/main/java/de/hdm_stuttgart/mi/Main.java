@@ -32,7 +32,7 @@ public class Main extends Application {
     private void initRouting(Stage primaryStage) {
         Router router = new Router();
 
-        router.setRoot(primaryStage, "Game Of Life", 960, 540);
+        router.setRoot(primaryStage, "Conway's Game Of Life", 1200, 776);
 
         // Setup routes here
         router.addPath("menu", "views/menu.fxml");
