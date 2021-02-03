@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -37,13 +38,5 @@ public class PlainTextDecoderTest {
         assertEquals(cells[3], new Cell(1, 1));
     }
 
-    @Test
-    public void exp(){
-        String workingDirectory = System.getProperty("user.dir"); //Absolute Path for current working directory
-
-        File file = new File(workingDirectory);
-
-        System.out.println(file.getAbsolutePath());
-    }
 
 }

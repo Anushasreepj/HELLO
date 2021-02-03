@@ -21,11 +21,12 @@ public class PresetLoader {
     }
 
     public void Reload(){
-        workingDirectory = System.getProperty("user.dir"); //Absolute Path for current working directory
+        workingDirectory = System.getProperty("user.dir") + "/presets/"; //Absolute Path for current working directory
 
         availableFilePaths = new HashMap<String, PresetEncoding>();
 
         file = new File(workingDirectory);
+
 
         String[] files = file.list();
         if(files != null){
