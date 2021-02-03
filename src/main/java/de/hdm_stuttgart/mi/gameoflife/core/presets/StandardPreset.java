@@ -1,9 +1,12 @@
-package de.hdm_stuttgart.mi.gameoflife.core;
+package de.hdm_stuttgart.mi.gameoflife.core.presets;
+
+import de.hdm_stuttgart.mi.gameoflife.core.Cell;
+import de.hdm_stuttgart.mi.gameoflife.core.IPreset;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StandardPreset implements IPreset{
+public class StandardPreset implements IPreset {
 
     //TODO: Implement proper Factory for Presets instead of this mess.
 

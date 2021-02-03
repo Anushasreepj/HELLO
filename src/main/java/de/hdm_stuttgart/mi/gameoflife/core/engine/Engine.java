@@ -12,8 +12,11 @@ public class Engine implements IEngine {
     private ScheduledFuture<?> timer;
 
     private boolean calculateParallel;
+    private boolean isRunning = false;
 
     private HashSet<FutureCellState> changes = new HashSet<FutureCellState>();
+
+    private HashSet<Cell> scheduledChanges = new HashSet<Cell>();
 
     private SimulationSettings settings = new SimulationSettings();
 
@@ -33,6 +36,7 @@ public class Engine implements IEngine {
     }
 
     public void startCalculation(Runnable onSuccess, SimulationSettings settings) {
+        isRunning = true;
         startInterval(settings.getMsPerTick(), () -> {
             nextGeneration();
 
@@ -50,10 +54,35 @@ public class Engine implements IEngine {
 
     public void stopCalculation() {
         stopInterval();
+        isRunning = false;
+    }
+
+    public boolean isRunning(){
+        return isRunning;
     }
 
     public void nextGeneration() {
         synchronized (gameGrid){ //locks gamegrid to let loadGamegrid() wait until this generation is completed
+
+
+            Cell[] states;
+
+            synchronized (scheduledChanges){ //Thread Safe Copy to working array followed by clear.
+                states = scheduledChanges.toArray(new Cell[0]);
+                scheduledChanges.clear();
+            }
+
+            synchronized (changes){
+                Arrays.stream(states).forEach(cell -> {
+                    boolean newState = !gameGrid.getState(cell);
+
+                    if(settings.isInBounds(cell)) changes.add(new FutureCellState(cell, newState));
+
+                    gameGrid.setState(cell, newState);
+                });
+            }
+
+
 
             ExecutorService es = Executors.newCachedThreadPool();
 
@@ -113,13 +142,14 @@ public class Engine implements IEngine {
 
             synchronized (changes){
                 for (FutureCellState state: futureCellStates) {
-                    if(state.isChanged()){
+                    if(state.isChanged() || settings.isUninitialized()){
                         if(settings.isInBounds(state.getCell())) changes.add(state);
 
                         gameGrid.setState(state.getCell(), state.isAlive());
                     }
                 }
             }
+            settings.setUninitialized(false);
         }
     }
 
@@ -140,6 +170,20 @@ public class Engine implements IEngine {
     }
 
 
+    public void scheduleCellFlip(Cell cell) {
+        synchronized (scheduledChanges){
+            scheduledChanges.add(cell);
+        }
+
+        if(!isRunning){ //Directly place on UI side, handle simulation in the next calculated generation.
+            synchronized (changes){
+                boolean newState = !gameGrid.getState(cell);
+                if(settings.isInBounds(cell)) changes.add(new FutureCellState(cell, newState));
+            }
+        }
+    }
+
+
     public FutureCellState[] getChanges() {
         synchronized (changes){
             FutureCellState[] returnValue = changes.toArray(new FutureCellState[0]);
@@ -147,6 +191,7 @@ public class Engine implements IEngine {
             return returnValue;
         }
     }
+
 
 
     /**

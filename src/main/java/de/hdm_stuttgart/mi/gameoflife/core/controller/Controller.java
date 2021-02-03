@@ -4,8 +4,12 @@ import de.hdm_stuttgart.mi.gameoflife.core.*;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.FutureCellState;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineFactory;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineNotFoundException;
+import de.hdm_stuttgart.mi.gameoflife.core.presets.PresetLoader;
+import de.hdm_stuttgart.mi.gameoflife.core.presets.StandardPreset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Random;
 
 public class Controller implements IController {
     private static final Logger logger = LogManager.getLogger(Controller.class);
@@ -16,14 +20,24 @@ public class Controller implements IController {
     private volatile int generationCount = 0; // Thread save
     private Editor editor = new Editor();
     private SimulationSettings settings = new SimulationSettings();
+    private PresetLoader presetLoader = new PresetLoader();
 
     public Controller() { }
 
     public void init() throws EngineNotFoundException {
         logger.info("Initialize Controller");
 
-        // Load a preset from standardPreset factory
-        loadPreset("Blinker", 25, 12);
+        // Load a random preset from standardPreset factory
+        String[] files = presetLoader.getAvailableFiles();
+        String fileToLoad = files[new Random().nextInt(files.length)];
+
+        try{
+            editor.loadPresetOffset(presetLoader.loadPreset(fileToLoad),20,20);
+            settings.setUninitialized(true);
+        } catch (Exception e){
+            logger.warn("Standard Preset " + fileToLoad +" couldn't be loaded.");
+            e.printStackTrace();
+        }
 
         // Get game grid
         gameGrid = editor.getGrid();
@@ -59,8 +73,6 @@ public class Controller implements IController {
     /**
      * Reset game state
      *
-     * Todo
-     *
      */
     public void reset() {
         engine.stopCalculation();
@@ -91,10 +103,12 @@ public class Controller implements IController {
      * Trigger next generation
      */
     public void nextStep() {
-        engine.nextGeneration();
+        if(!engine.isRunning()){
+            engine.nextGeneration();
 
-        // Increment generation count
-        generationCount++;
+            // Increment generation count
+            generationCount++;
+        }
     }
 
     /**
@@ -116,4 +130,27 @@ public class Controller implements IController {
     public int getGenerationCount() {
         return generationCount;
     }
+
+    /**
+     *
+     * @return The Bottom Left Corner of the area the engine shall provide updates for
+     */
+    public Cell getBottomRightBound(){
+        return settings.getBottomRightBound();
+    }
+
+    /**
+     *
+     * @return The Top Right Corner of the area the engine shall provide updates for
+     */
+    public Cell getTopLeftBound(){
+        return settings.getTopLeftBound();
+    }
+
+
+    public void scheduleCellStateFlip(Cell cell) {
+        engine.scheduleCellFlip(cell);
+    }
+
+
 }
