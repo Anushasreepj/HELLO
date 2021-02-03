@@ -19,7 +19,9 @@ public class StreamEngine implements IEngine {
     private ScheduledFuture<?> timer;
 
     private boolean calculateParallel;
+    private boolean isRunning = false;
     private HashSet<FutureCellState> changes = new HashSet<FutureCellState>();
+    private HashSet<Cell> scheduledChanges = new HashSet<Cell>();
 
     private SimulationSettings settings = new SimulationSettings();
 
@@ -39,6 +41,7 @@ public class StreamEngine implements IEngine {
     }
 
     public void startCalculation(Runnable onSuccess, SimulationSettings settings) {
+        isRunning = true;
         startInterval(settings.getMsPerTick(), () -> {
             nextGeneration();
 
@@ -57,8 +60,13 @@ public class StreamEngine implements IEngine {
 
 
     public void stopCalculation() {
+        isRunning = false;
         stopInterval();
         logger.trace("Stopped automated Calculation");
+    }
+
+    public boolean isRunning(){
+        return isRunning;
     }
 
 
@@ -66,6 +74,24 @@ public class StreamEngine implements IEngine {
         synchronized (gameGrid){
 
             logger.trace("Started calculating next generation");
+
+            Cell[] states;
+            synchronized (scheduledChanges){ //Thread Safe Copy to working array followed by clear.
+                states = scheduledChanges.toArray(new Cell[0]);
+                scheduledChanges.clear();
+            }
+
+            synchronized (changes){
+                Arrays.stream(states).forEach(cell -> {
+                    boolean newState = !gameGrid.getState(cell);
+
+                    if(settings.isInBounds(cell)) changes.add(new FutureCellState(cell, newState));
+
+                    gameGrid.setState(cell, newState);
+                });
+            }
+
+
 
             //1. Check for births
             HashMap<Cell,Integer> deadCellsToCheck = new HashMap<Cell,Integer>();
@@ -114,6 +140,7 @@ public class StreamEngine implements IEngine {
 
                     gameGrid.setState(futureCellState.getCell(), futureCellState.isAlive());
                 });
+
             }
 
             logger.trace("Finished calculating next generation");
@@ -133,12 +160,25 @@ public class StreamEngine implements IEngine {
         logger.trace("Replaced game grid");
     }
 
-    @Override
+
     public FutureCellState[] getChanges() {
         synchronized (changes){
             FutureCellState[] returnValue = changes.toArray(new FutureCellState[0]);
             changes.clear();
             return returnValue;
+        }
+    }
+
+    public void scheduleCellFlip(Cell cell) {
+        synchronized (scheduledChanges){
+            scheduledChanges.add(cell);
+        }
+
+        if(!isRunning){ //Directly place on UI side, handle simulation in the next calculated generation.
+            synchronized (gameGrid){
+                boolean newState = !gameGrid.getState(cell);
+                if(settings.isInBounds(cell)) changes.add(new FutureCellState(cell, newState));
+            }
         }
     }
 

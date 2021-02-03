@@ -33,5 +33,9 @@ public interface IEngine {
      */
     void loadGrid(IGrid grid);
 
+    void scheduleCellFlip(Cell cell);
+
+    boolean isRunning();
+
     FutureCellState[] getChanges();
 }
