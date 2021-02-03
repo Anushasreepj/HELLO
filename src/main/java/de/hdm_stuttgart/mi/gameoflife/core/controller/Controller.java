@@ -30,14 +30,7 @@ public class Controller implements IController {
         // Load a random preset from standardPreset factory
         String[] files = presetLoader.getAvailableFiles();
         String fileToLoad = files[new Random().nextInt(files.length)];
-
-        try{
-            editor.loadPresetOffset(presetLoader.loadPreset(fileToLoad),20,20);
-            settings.setUninitialized(true);
-        } catch (Exception e){
-            logger.warn("Standard Preset " + fileToLoad +" couldn't be loaded.");
-            e.printStackTrace();
-        }
+        loadPreset(fileToLoad, 20, 20);
 
         // Get game grid
         gameGrid = editor.getGrid();
@@ -46,36 +39,44 @@ public class Controller implements IController {
         engine = EngineFactory.loadByName("engine", gameGrid);
     }
 
-    public void loadPreset(final String presetName, final int offsetX, final int offsetY) {
-        StandardPreset preset;
-
-        switch (presetName) {
-            case "Light Weight Space Ship":
-                preset = StandardPreset.getLightWeightSpaceShip();
-                break;
-            case "Blinker":
-                preset = StandardPreset.getBlinker();
-                break;
-            case "Square":
-                preset = StandardPreset.getSquare();
-                break;
-            case "Small Tub":
-                preset = StandardPreset.getShortTub();
-                break;
-            case "Hive":
-            default:
-                preset = StandardPreset.getHive();
+    /**
+     * Load a preset from PresetLoader
+     *
+     * @param fileToLoad is a fileName
+     * @param offsetX
+     * @param offsetY
+     */
+    public void loadPreset(final String fileToLoad, final int offsetX, final int offsetY) {
+        try {
+            editor.loadPresetOffset(presetLoader.loadPreset(fileToLoad),offsetX,offsetY);
+            settings.setUninitialized(true);
+        } catch (Exception e){
+            logger.warn("Standard Preset " + fileToLoad +" couldn't be loaded.");
+            e.printStackTrace();
         }
 
-        editor.loadPresetOffset(StandardPreset.getBlinker(), offsetX, offsetY);
+        if (engine != null) {
+            gameGrid = editor.getGrid();
+            engine.loadGrid(gameGrid);
+        }
+    }
+
+    /**
+     * Get a PresetLoader instance
+     *
+     * @return PresetLoader
+     */
+    public PresetLoader getPresetLoader() {
+        return presetLoader;
     }
 
     /**
      * Reset game state
-     *
      */
     public void reset() {
         engine.stopCalculation();
+        editor.clear();
+        // gameGrid = editor.getGrid();
 
         // Reset generation count
         generationCount = 0;
@@ -125,6 +126,15 @@ public class Controller implements IController {
 
     public FutureCellState[] getChangedCellStates() {
         return engine.getChanges();
+    }
+
+    /**
+     * Get all current alive cells
+     *
+     * @return
+     */
+    public Cell[] getAliveCells() {
+        return gameGrid.getAliveCells();
     }
 
     public int getGenerationCount() {

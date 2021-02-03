@@ -5,6 +5,7 @@ import de.hdm_stuttgart.mi.gameoflife.core.Cell;
 import de.hdm_stuttgart.mi.gameoflife.core.controller.Controller;
 import de.hdm_stuttgart.mi.gameoflife.core.controller.IController;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineNotFoundException;
+import de.hdm_stuttgart.mi.gameoflife.core.presets.PresetLoader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -64,8 +65,7 @@ public class GameController extends PageBaseController {
     @FXML
     private void resetClicked(ActionEvent event) {
         logger.info("`Reset` clicked");
-        controller.reset();
-        resetGenerationCount();
+        resetGrid();
     }
 
     /**
@@ -78,8 +78,6 @@ public class GameController extends PageBaseController {
         logger.info("`Pause` clicked");
 
         controller.pause();
-
-        //pauseFrameTickInterval();
     }
 
     /**
@@ -92,8 +90,6 @@ public class GameController extends PageBaseController {
         logger.info("`Start` clicked");
 
         controller.start();
-
-        //startFrameTickInterval();
     }
 
     /**
@@ -145,9 +141,7 @@ public class GameController extends PageBaseController {
             // Initialize engine controller here
             controller.init();
 
-            // Update Grid
-            this.updateGrid();
-            logger.info("update grid");
+            initializeGrid();
 
         } catch (EngineNotFoundException e) {
             logger.error("Error while initializing engine");
@@ -170,12 +164,14 @@ public class GameController extends PageBaseController {
         });
 
         // Setup editor
-        final Collection<String> defaultPresets = Arrays.asList("Light Weight Space Ship", "Blinker", "Square", "Small Tub", "Hive");
+        PresetLoader presetLoader = controller.getPresetLoader();
+        final Collection<String> defaultPresets = Arrays.asList(presetLoader.getAvailableFiles());
         editor.addPresets(defaultPresets);
         editor.registerPresetsSelectChangedListener((presetName) -> {
             logger.info(presetName);
+            resetGrid();
             controller.loadPreset(presetName, 25, 12);
-            controller.nextStep();
+            initializeGrid();
         });
 
         startFrameTickInterval();
@@ -186,6 +182,22 @@ public class GameController extends PageBaseController {
      */
     private void updateGrid() {
         grid.update(controller.getChangedCellStates());
+    }
+
+    /**
+     * Reset game grid and generation count
+     */
+    private void resetGrid() {
+        controller.reset();
+        grid.createEmptyGrid();
+        resetGenerationCount();
+    }
+
+    /**
+     * Initialize Grid. Load all current alive cells into grid
+     */
+    private void initializeGrid() {
+        grid.loadAliveCells(controller.getAliveCells());
     }
 
     /**
