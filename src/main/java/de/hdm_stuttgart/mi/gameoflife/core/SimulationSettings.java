@@ -79,4 +79,14 @@ public class SimulationSettings {
         return parallelCalculations;
     }
 
+    private boolean uninitialized = false;
+
+    public void setUninitialized(boolean uninitialized){
+        this.uninitialized = uninitialized;
+    }
+
+    public boolean isUninitialized(){
+        return uninitialized;
+    }
+
 }
