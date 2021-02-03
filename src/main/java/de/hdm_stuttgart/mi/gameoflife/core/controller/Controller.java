@@ -35,8 +35,6 @@ public class Controller implements IController {
     /**
      * Reset game state
      *
-     * Todo
-     *
      */
     public void reset() {
         engine.stopCalculation();
@@ -67,10 +65,12 @@ public class Controller implements IController {
      * Trigger next generation
      */
     public void nextStep() {
-        engine.nextGeneration();
+        if(!engine.isRunning()){
+            engine.nextGeneration();
 
-        // Increment generation count
-        generationCount++;
+            // Increment generation count
+            generationCount++;
+        }
     }
 
     /**
@@ -92,4 +92,27 @@ public class Controller implements IController {
     public int getGenerationCount() {
         return generationCount;
     }
+
+    /**
+     *
+     * @return The Bottom Left Corner of the area the engine shall provide updates for
+     */
+    public Cell getBottomRightBound(){
+        return settings.getBottomRightBound();
+    }
+
+    /**
+     *
+     * @return The Top Right Corner of the area the engine shall provide updates for
+     */
+    public Cell getTopLeftBound(){
+        return settings.getTopLeftBound();
+    }
+
+
+    public void scheduleCellStateFlip(Cell cell) {
+        engine.scheduleCellFlip(cell);
+    }
+
+
 }

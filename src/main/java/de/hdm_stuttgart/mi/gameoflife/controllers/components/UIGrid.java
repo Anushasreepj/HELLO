@@ -15,6 +15,14 @@ public class UIGrid extends Canvas {
     final private int spaceBetween = 2;
     final private int cellSize = 10;
 
+    /**
+     *
+     * @return the total size a cell will occupy.
+     */
+    public int getTotalCellSize(){
+        return cellSize + spaceBetween;
+    }
+
 
     public UIGrid() {
         // Setup canvas and create an empty grid
@@ -41,6 +49,8 @@ public class UIGrid extends Canvas {
      * @param gridSize width = height
      */
     private void createEmptyGrid(final int gridSize) {
+
+
 
         // Set grid width and height
         this.setWidth(gridSize);
