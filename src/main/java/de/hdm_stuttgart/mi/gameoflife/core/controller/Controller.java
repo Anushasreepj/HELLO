@@ -4,6 +4,7 @@ import de.hdm_stuttgart.mi.gameoflife.core.*;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.FutureCellState;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineFactory;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineNotFoundException;
+import de.hdm_stuttgart.mi.gameoflife.core.presets.StandardPreset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

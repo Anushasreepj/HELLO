@@ -1,5 +1,6 @@
 package de.hdm_stuttgart.mi.gameoflife.core;
 
+import de.hdm_stuttgart.mi.gameoflife.core.presets.StandardPreset;
 import org.junit.Before;
 import org.junit.Test;
 
