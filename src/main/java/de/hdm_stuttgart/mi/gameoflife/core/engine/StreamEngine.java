@@ -20,7 +20,7 @@ public class StreamEngine implements IEngine {
 
     private boolean calculateParallel;
     private boolean isRunning = false;
-    private HashSet<FutureCellState> changes = new HashSet<FutureCellState>();
+    private HashMap<Cell,FutureCellState> changes = new HashMap<Cell,FutureCellState>();
     private HashSet<Cell> scheduledChanges = new HashSet<Cell>();
 
     private SimulationSettings settings = new SimulationSettings();
@@ -85,7 +85,12 @@ public class StreamEngine implements IEngine {
                 Arrays.stream(states).forEach(cell -> {
                     boolean newState = !gameGrid.getState(cell);
 
-                    if(settings.isInBounds(cell)) changes.add(new FutureCellState(cell, newState));
+                    if(settings.isInBounds(cell)) {
+                        if(changes.containsKey(cell)){
+                            changes.remove(cell);
+                        }
+                        changes.put(cell, new FutureCellState(cell, newState));
+                    }
 
                     gameGrid.setState(cell, newState);
                 });
@@ -135,10 +140,17 @@ public class StreamEngine implements IEngine {
 
             //3. Apply Changes
             synchronized (changes){
-                futureCellStates.stream().filter(futureCellState -> futureCellState.isChanged() || settings.isUninitialized()).forEach(futureCellState -> {
-                    if(settings.isInBounds(futureCellState.getCell())) changes.add(futureCellState);
+                futureCellStates.stream().filter(futureCellState -> futureCellState.isChanged() || settings.isUninitialized()).forEach(state -> {
+                    if(settings.isInBounds(state.getCell())){
+                        if(changes.containsKey(state.getCell())){
+                            changes.remove(state.getCell());
+                        }
+                        changes.put(state.getCell(), state);
+                    }
 
-                    gameGrid.setState(futureCellState.getCell(), futureCellState.isAlive());
+                    gameGrid.setState(state.getCell(), state.isAlive());
+
+                    gameGrid.setState(state.getCell(), state.isAlive());
                 });
 
             }
@@ -163,7 +175,7 @@ public class StreamEngine implements IEngine {
 
     public FutureCellState[] getChanges() {
         synchronized (changes){
-            FutureCellState[] returnValue = changes.toArray(new FutureCellState[0]);
+            FutureCellState[] returnValue = changes.values().toArray(new FutureCellState[0]);
             changes.clear();
             return returnValue;
         }
@@ -175,9 +187,14 @@ public class StreamEngine implements IEngine {
         }
 
         if(!isRunning){ //Directly place on UI side, handle simulation in the next calculated generation.
-            synchronized (gameGrid){
+            synchronized (changes){
                 boolean newState = !gameGrid.getState(cell);
-                if(settings.isInBounds(cell)) changes.add(new FutureCellState(cell, newState));
+                if(settings.isInBounds(cell)) {
+                    if(changes.containsKey(cell)){
+                        changes.remove(cell);
+                    }
+                    changes.put(cell, new FutureCellState(cell, newState));
+                }
             }
         }
     }
