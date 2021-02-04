@@ -6,14 +6,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-
-
 public class UIGrid extends Canvas {
 
     // How the cells will get rendered.
     final private int spaceBetween = 2;
     final private int cellSize = 10;
+    final private int gridSize = 2000;
 
     /**
      *
@@ -26,7 +24,7 @@ public class UIGrid extends Canvas {
 
     public UIGrid() {
         // Setup canvas and create an empty grid
-        createEmptyGrid(2000);
+        createEmptyGrid();
     }
 
     /**
@@ -43,14 +41,18 @@ public class UIGrid extends Canvas {
         }
     }
 
+    public void loadAliveCells(Cell[] aliveCells)  {
+        GraphicsContext cc = this.getGraphicsContext2D();
+
+        for(Cell cell: aliveCells){
+            updateCell(cc, new FutureCellState(cell, true));
+        }
+    }
+
     /**
      * Initialize an empty canvas grid
-     *
-     * @param gridSize width = height
      */
-    private void createEmptyGrid(final int gridSize) {
-
-
+    public void createEmptyGrid() {
 
         // Set grid width and height
         this.setWidth(gridSize);

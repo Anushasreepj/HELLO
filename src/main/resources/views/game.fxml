@@ -12,6 +12,8 @@
 <?import java.net.URL?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIEditor?>
+<?import de.hdm_stuttgart.mi.gameoflife.controllers.components.UIPresetsSelect?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.GameController" styleClass="main">
     <top>
         <HBox alignment="CENTER_LEFT">
@@ -34,7 +36,26 @@
         </HBox>
     </top>
     <left></left>
-    <right></right>
+    <right>
+        <UIEditor id="editor" fx:id="editor" alignment="TOP_CENTER" minWidth="170">
+            <BorderPane.margin>
+                <Insets left="15" right="15" top="15" bottom="15"/>
+            </BorderPane.margin>
+            <spacing>30</spacing>
+            <Button prefWidth="140" prefHeight="32" text="&#9654;  Start" onAction="#startClicked"/>
+            <spacing>10</spacing>
+            <Button prefWidth="140" prefHeight="32" text="&#10074;  Pause" onAction="#pauseClicked"/>
+            <spacing>10</spacing>
+            <Button prefWidth="140" prefHeight="32" text="&#9654;&#9654;  Next" onAction="#nextClicked"/>
+            <spacing>10</spacing>
+            <Button prefWidth="140" prefHeight="32" text="&#9632;  Reset" onAction="#resetClicked"/>
+            <spacing>30</spacing>
+            <HBox alignment="CENTER" prefWidth="150">
+                <Text>Generation: </Text>
+                <Text id="generationCount" fx:id="generationCount">0</Text>
+            </HBox>
+        </UIEditor>
+    </right>
     <center>
         <HBox alignment="CENTER" id="wrapper" fx:id="wrapper"></HBox>
     </center>
@@ -43,27 +64,10 @@
             <BorderPane.margin>
                 <Insets left="15" right="15" top="15" bottom="15"/>
             </BorderPane.margin>
-            <HBox alignment="CENTER">
-                <BorderPane.margin>
-                    <Insets left="15" right="15" top="15" bottom="15"/>
-                </BorderPane.margin>
-                <Button prefWidth="80" prefHeight="32" text="&#9632;  Reset" onAction="#resetClicked"/>
-                <spacing>10</spacing>
-                <Button prefWidth="80" prefHeight="32" text="&#10074;  Pause" onAction="#pauseClicked"/>
-                <spacing>10</spacing>
-                <Button prefWidth="80" prefHeight="32" text="&#9654;  Start" onAction="#startClicked"/>
-                <spacing>10</spacing>
-                <Button prefWidth="80" prefHeight="32" text="&#9654;&#9654;  Next" onAction="#nextClicked"/>
-                <spacing>10</spacing>
-                <HBox alignment="CENTER" prefWidth="150">
-                    <Text>Generation: </Text>
-                    <Text id="generationCount" fx:id="generationCount">0</Text>
-                </HBox>
-            </HBox>
             <spacing>30</spacing>
-            <HBox alignment="CENTER">
+            <HBox alignment="CENTER_LEFT">
                 <BorderPane.margin>
-                    <Insets left="15" right="15" top="15" bottom="15"/>
+                    <Insets left="15" right="15" top="15" bottom="25"/>
                 </BorderPane.margin>
                 <Label>Zoom:</Label>
                 <UIZoomSlider id="zoomSlider" fx:id="zoomSlider"></UIZoomSlider>
