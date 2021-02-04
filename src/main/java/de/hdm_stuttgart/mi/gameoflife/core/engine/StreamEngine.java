@@ -15,9 +15,7 @@ public class StreamEngine implements IEngine {
     private static final Logger logger = LogManager.getLogger(StreamEngine.class);
 
     private IGrid gameGrid;
-    private ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-    private ScheduledFuture<?> timer;
-
+    private EngineTimer engineTimer = new EngineTimer();
     private boolean calculateParallel;
     private boolean isRunning = false;
     private HashMap<Cell,FutureCellState> changes = new HashMap<Cell,FutureCellState>();
@@ -42,7 +40,7 @@ public class StreamEngine implements IEngine {
 
     public void startCalculation(Runnable onSuccess, SimulationSettings settings) {
         isRunning = true;
-        startInterval(settings.getMsPerTick(), () -> {
+        engineTimer.startInterval(settings.getMsPerTick(), () -> {
             nextGeneration();
 
             // Notify caller that calculation step was successful
@@ -61,7 +59,7 @@ public class StreamEngine implements IEngine {
 
     public void stopCalculation() {
         isRunning = false;
-        stopInterval();
+        engineTimer.stopInterval();
         logger.trace("Stopped automated Calculation");
     }
 
@@ -196,24 +194,6 @@ public class StreamEngine implements IEngine {
                     changes.put(cell, new FutureCellState(cell, newState));
                 }
             }
-        }
-    }
-
-
-    /**
-     * Starts or Restarts the Interval
-     * @param speed
-     */
-    private void  startInterval(long speed, Runnable timerTask){
-        timer = ses.scheduleAtFixedRate(timerTask,0, speed, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * Stops the Interval
-     */
-    private void stopInterval(){
-        if (timer != null) {
-            timer.cancel(false);
         }
     }
 }
