@@ -24,7 +24,7 @@ public class RLEDecoder implements IPresetDecoder{
          */
 
         //1. Process Lines
-        String[] lines = rawData.split("!")[0].split("\n"); //Only cover the stuff before the first !, since everything after is not part of the pattern.
+        String[] lines = rawData.split("\n");
         StringBuilder validTextBuilder = new StringBuilder();
         String name = "New Preset";
         int xOffset = 0;
