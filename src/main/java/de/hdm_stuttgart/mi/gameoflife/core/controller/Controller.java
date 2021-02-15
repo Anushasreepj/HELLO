@@ -76,7 +76,8 @@ public class Controller implements IController {
     public void reset() {
         engine.stopCalculation();
         editor.clear();
-        // gameGrid = editor.getGrid();
+        gameGrid = editor.getGrid();
+        engine.loadGrid(gameGrid);
 
         // Reset generation count
         generationCount = 0;
