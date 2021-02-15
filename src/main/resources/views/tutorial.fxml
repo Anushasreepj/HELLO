@@ -3,7 +3,53 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.TutorialController" alignment="CENTER">
-    <Label text="Tutorial"/>
-    <Button text="Back" onAction="#navigateToMenu"/>
-</VBox>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import java.net.URL?>
+<?import javafx.scene.text.Text?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="de.hdm_stuttgart.mi.gameoflife.controllers.TutorialController" styleClass="main">
+    <top>
+        <HBox alignment="CENTER_LEFT">
+            <BorderPane.margin>
+                <Insets left="15" right="15" top="15" bottom="15"/>
+            </BorderPane.margin>
+            <Button prefHeight="32" text="Back" onAction="#navigateToMenu"/>
+            <spacing>15</spacing>
+            <ImageView fx:id="imageView"
+                       fitHeight="150.0"
+                       fitWidth="400.0"
+                       layoutX="61.0"
+                       layoutY="83.0"
+                       pickOnBounds="true"
+                       preserveRatio="true">
+                <image>
+                    <Image url="@../images/logo_1.png" backgroundLoading="true" />
+                </image>
+            </ImageView>
+        </HBox>
+    </top>
+    <left></left>
+    <right>
+    </right>
+    <center>
+        <VBox alignment="CENTER">
+            <HBox alignment="CENTER">
+                <VBox>
+                    <Text>1. Eine tote Zelle mit genau drei lebenden Nachbarn wird in der Folgegeneration neu geboren</Text>
+                    <spacing>15</spacing>
+                    <Text>2. Lebende Zellen mit weniger als zwei lebenden Nachbarn sterben in der Folgegeneration an Einsamkeit.</Text>
+                    <spacing>15</spacing>
+                    <Text>3. Eine lebende Zelle mit zwei oder drei lebenden Nachbarn bleibt in der Folgegeneration am Leben.</Text>
+                    <spacing>15</spacing>
+                    <Text>4. Lebende Zellen mit mehr als drei lebenden Nachbarn sterben in der Folgegeneration an Überbevölkerung.</Text>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+    <bottom>
+    </bottom>
+    <stylesheets>
+        <URL value="@../styles/main.css" />
+    </stylesheets>
+</BorderPane>
