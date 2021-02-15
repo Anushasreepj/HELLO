@@ -8,13 +8,13 @@ import java.util.concurrent.*;
 public class Engine implements IEngine {
 
     private IGrid gameGrid = new Grid();
-    private ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-    private ScheduledFuture<?> timer;
 
     private boolean calculateParallel;
     private boolean isRunning = false;
 
-    private HashSet<FutureCellState> changes = new HashSet<FutureCellState>();
+    private EngineTimer engineTimer = new EngineTimer();
+
+    private HashMap<Cell,FutureCellState> changes = new HashMap<Cell,FutureCellState>();
 
     private HashSet<Cell> scheduledChanges = new HashSet<Cell>();
 
@@ -37,7 +37,7 @@ public class Engine implements IEngine {
 
     public void startCalculation(Runnable onSuccess, SimulationSettings settings) {
         isRunning = true;
-        startInterval(settings.getMsPerTick(), () -> {
+        engineTimer.startInterval(settings.getMsPerTick(), () -> {
             nextGeneration();
 
             // Notify caller that calculation step was successful
@@ -53,7 +53,7 @@ public class Engine implements IEngine {
 
 
     public void stopCalculation() {
-        stopInterval();
+        engineTimer.stopInterval();
         isRunning = false;
     }
 
@@ -66,7 +66,6 @@ public class Engine implements IEngine {
 
 
             Cell[] states;
-
             synchronized (scheduledChanges){ //Thread Safe Copy to working array followed by clear.
                 states = scheduledChanges.toArray(new Cell[0]);
                 scheduledChanges.clear();
@@ -76,7 +75,12 @@ public class Engine implements IEngine {
                 Arrays.stream(states).forEach(cell -> {
                     boolean newState = !gameGrid.getState(cell);
 
-                    if(settings.isInBounds(cell)) changes.add(new FutureCellState(cell, newState));
+                    if(settings.isInBounds(cell)) {
+                        if(changes.containsKey(cell)){
+                            changes.remove(cell);
+                        }
+                        changes.put(cell, new FutureCellState(cell, newState));
+                    }
 
                     gameGrid.setState(cell, newState);
                 });
@@ -143,7 +147,12 @@ public class Engine implements IEngine {
             synchronized (changes){
                 for (FutureCellState state: futureCellStates) {
                     if(state.isChanged() || settings.isUninitialized()){
-                        if(settings.isInBounds(state.getCell())) changes.add(state);
+                        if(settings.isInBounds(state.getCell())){
+                            if(changes.containsKey(state.getCell())){
+                                changes.remove(state.getCell());
+                            }
+                            changes.put(state.getCell(), state);
+                        }
 
                         gameGrid.setState(state.getCell(), state.isAlive());
                     }
@@ -178,7 +187,12 @@ public class Engine implements IEngine {
         if(!isRunning){ //Directly place on UI side, handle simulation in the next calculated generation.
             synchronized (changes){
                 boolean newState = !gameGrid.getState(cell);
-                if(settings.isInBounds(cell)) changes.add(new FutureCellState(cell, newState));
+                if(settings.isInBounds(cell)) {
+                    if(changes.containsKey(cell)){
+                        changes.remove(cell);
+                    }
+                    changes.put(cell, new FutureCellState(cell, newState));
+                }
             }
         }
     }
@@ -186,30 +200,12 @@ public class Engine implements IEngine {
 
     public FutureCellState[] getChanges() {
         synchronized (changes){
-            FutureCellState[] returnValue = changes.toArray(new FutureCellState[0]);
+            FutureCellState[] returnValue = changes.values().toArray(new FutureCellState[0]);
             changes.clear();
             return returnValue;
         }
     }
 
-
-
-    /**
-     * Starts or Restarts the Interval
-     * @param speed
-     */
-    private void  startInterval(long speed, Runnable timerTask){
-        timer = ses.scheduleAtFixedRate(timerTask,0, speed, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * Stops the Interval
-     */
-    private void stopInterval(){
-        if (timer != null) {
-            timer.cancel(false);
-        }
-    }
 }
 
 
