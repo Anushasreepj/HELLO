@@ -1,6 +1,7 @@
 package de.hdm_stuttgart.mi.gameoflife.core.presets;
 
 import de.hdm_stuttgart.mi.gameoflife.core.Cell;
+import de.hdm_stuttgart.mi.gameoflife.core.IPreset;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 public class PlainTextDecoder implements IPresetDecoder {
 
     @Override
-    public StandardPreset convertToPreset(String rawData) throws InvalidPresetFileException {
+    public IPreset convertToPreset(String rawData) throws InvalidPresetFileException {
         //Plain Text Explained by https://www.conwaylife.com/wiki/Plaintext:
         /*
              The first line is a header line, which has the form

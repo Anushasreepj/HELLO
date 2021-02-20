@@ -1,6 +1,7 @@
 package de.hdm_stuttgart.mi.gameoflife.core.presets;
 
 import de.hdm_stuttgart.mi.gameoflife.core.Cell;
+import de.hdm_stuttgart.mi.gameoflife.core.IPreset;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class RLEDecoderTest {
 
     @Test
     public void testSquare() throws InvalidPresetFileException {
-        StandardPreset outputPreset =
+        IPreset outputPreset =
                 decoder.convertToPreset("#N Square\n" +
                         "#R 4 4\n" + //Shift everything by 4 in both directions.
                         "2\no$\n2o!"); //Line breaks don't matter here!

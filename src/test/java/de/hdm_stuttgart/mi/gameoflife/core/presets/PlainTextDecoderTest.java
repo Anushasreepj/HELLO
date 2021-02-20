@@ -1,5 +1,6 @@
 package de.hdm_stuttgart.mi.gameoflife.core.presets;
 import de.hdm_stuttgart.mi.gameoflife.core.Cell;
+import de.hdm_stuttgart.mi.gameoflife.core.IPreset;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class PlainTextDecoderTest {
 
     @Test
     public void testSquare() throws InvalidPresetFileException {
-        StandardPreset outputPreset =
+        IPreset outputPreset =
                 plainTextDecoder.convertToPreset("!Name: Square\n" +
                 "OO......\n" +
                 "OO..\n\n\n");

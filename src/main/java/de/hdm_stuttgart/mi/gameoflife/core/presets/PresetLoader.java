@@ -1,5 +1,7 @@
 package de.hdm_stuttgart.mi.gameoflife.core.presets;
 
+import de.hdm_stuttgart.mi.gameoflife.core.IPreset;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,7 +46,7 @@ public class PresetLoader {
         return availableFilePaths.keySet().toArray(new String[0]);
     }
 
-    public StandardPreset loadPreset(String fileName) throws IOException, InvalidPresetFileException {
+    public IPreset loadPreset(String fileName) throws IOException, InvalidPresetFileException {
 
         if(!availableFilePaths.containsKey(fileName)){
             throw new FileNotFoundException("Preset file " + workingDirectory + fileName + " is unknown.");
