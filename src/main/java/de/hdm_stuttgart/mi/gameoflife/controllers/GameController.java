@@ -225,12 +225,7 @@ public class GameController extends PageBaseController {
         frameTickInterval = new Timeline(
                 new KeyFrame(Duration.millis(Math.floor(1000/fps)),
                         event -> {
-                            // long startTime = System.nanoTime();
-
                             callback.run();
-
-                            // long elapsedTime = System.nanoTime() - startTime;
-                            // logger.info("tick, " + elapsedTime / 1000000f + "ms.");
                         }));
 
         frameTickInterval.setCycleCount(Timeline.INDEFINITE);
@@ -249,40 +244,6 @@ public class GameController extends PageBaseController {
             default:
                 frameTickInterval.play();
                 logger.info("Frame ticker started");
-        }
-    }
-
-    /**
-     * Pause the frame tick interval
-     */
-    private void pauseFrameTickInterval() {
-        switch (frameTickInterval.getStatus()) {
-            case PAUSED:
-                logger.info("Frame ticker already paused");
-                break;
-            case STOPPED:
-                logger.info("Frame ticker already stopped");
-                break;
-            case RUNNING:
-            default:
-                frameTickInterval.pause();
-                logger.info("Frame ticker paused");
-        }
-    }
-
-    /**
-     * Stop the frame tick interval
-     */
-    private void stopFrameTickInterval() {
-        switch (frameTickInterval.getStatus()) {
-            case STOPPED:
-                logger.info("Frame ticker already stopped");
-                break;
-            case PAUSED:
-            case RUNNING:
-            default:
-                frameTickInterval.stop();
-                logger.info("Frame ticker stopped");
         }
     }
 }
