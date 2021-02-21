@@ -2,7 +2,9 @@
 A cellular Automata
 
 SE2 project by 
+
 Johannes Niedworok - jn035
+
 Dominik Mezler - dm114
 
 
