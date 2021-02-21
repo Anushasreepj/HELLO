@@ -19,8 +19,8 @@ public class UIEditor extends VBox
         presetsSelect.add(presets);
     }
 
-    public void registerPresetsSelectChangedListener(Consumer<String> c) {
-        presetsSelectChangedSubject = c;
+    public void registerPresetsSelectChangedListener(Consumer<String> presetName) {
+        presetsSelectChangedSubject = presetName;
     }
 
 
