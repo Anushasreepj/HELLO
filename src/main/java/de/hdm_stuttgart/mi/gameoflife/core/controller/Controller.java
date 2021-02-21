@@ -35,7 +35,7 @@ public class Controller implements IController {
         gameGrid = editor.getGrid();
 
         // Initialize core engine with game grid
-        engine = EngineFactory.loadByName("engine", gameGrid);
+        engine = EngineFactory.loadByName("streamengine", gameGrid);
     }
 
     /**
