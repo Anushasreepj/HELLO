@@ -1,7 +1,7 @@
 package de.hdm_stuttgart.mi.gameoflife.core.controller;
 
 import de.hdm_stuttgart.mi.gameoflife.core.Cell;
-import de.hdm_stuttgart.mi.gameoflife.core.engine.FutureCellState;
+import de.hdm_stuttgart.mi.gameoflife.core.engine.CellStateChange;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineNotFoundException;
 import de.hdm_stuttgart.mi.gameoflife.core.presets.PresetLoader;
 
@@ -22,7 +22,7 @@ public interface IController {
 
     void setSpeed(int msPerTick);
 
-    FutureCellState[] getChangedCellStates();
+    CellStateChange[] getChangedCellStates();
 
     Cell[] getAliveCells();
 

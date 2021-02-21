@@ -1,0 +1,1 @@
+/home/dominik/.jdks/liberica-14.0.2/bin/javadoc @options @packages

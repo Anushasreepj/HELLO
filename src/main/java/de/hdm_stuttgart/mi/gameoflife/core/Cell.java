@@ -3,6 +3,10 @@ package de.hdm_stuttgart.mi.gameoflife.core;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Cell Class is designed to be a key object.
+ * All Cell Objects with the same x and y values will have the same hash code and will return true for cellA.equals(cellB).
+ */
 public class Cell{
     private int x;
     private int y;

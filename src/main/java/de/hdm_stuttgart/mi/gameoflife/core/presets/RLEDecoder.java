@@ -6,23 +6,24 @@ import de.hdm_stuttgart.mi.gameoflife.core.IPreset;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ RLE Structure for our GOL:
+
+ Just basic RLE, with the structure run_coun|ttag. The last item of the whole preset is followed by a !.
+ A line end is indicated by a $.
+ Example for basic glider:
+ 3o$2bo$bo!
+
+ The basic structure is provided by # lines:
+ #N ThisIsTheName
+ #R 5 7 This will offset the structure by 5 in x- and 7 in y-Direction.
+ All other # lines beginning with a # will just be handled as comments.
+
+ */
 public class RLEDecoder implements IPresetDecoder{
-    @Override
+
     public IPreset convertToPreset(String rawData) throws InvalidPresetFileException {
-        /*
-            RLE Structure for our GOL:
 
-            Just basic RLE, with the structure <run_count><tag>. The last item of the whole preset is followed by a !.
-            A line end is indicated by a $.
-            Example for basic glider:
-            3o$2bo$bo!
-
-            The basic structure is provided by # lines:
-            #N ThisIsTheName
-            #R 5 7 This will offset the structure by 5 in x- and 7 in y-Direction.
-            All other lines beginning with a # will just be handled as comments => ignored.
-
-         */
 
         //1. Process Lines
         String[] lines = rawData.split("\n");

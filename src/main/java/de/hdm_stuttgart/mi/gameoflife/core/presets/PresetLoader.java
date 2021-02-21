@@ -22,6 +22,9 @@ public class PresetLoader {
         Reload();
     }
 
+    /**
+     * Reloads all available files in the working directory
+     */
     public void Reload(){
         workingDirectory = System.getProperty("user.dir") + "/presets/"; //Absolute Path for current working directory
 
@@ -42,6 +45,10 @@ public class PresetLoader {
         }
     }
 
+    /**
+     *
+     * @return All currently known preset files
+     */
     public String[] getAvailableFiles(){
         return availableFilePaths.keySet().toArray(new String[0]);
     }
@@ -69,7 +76,7 @@ public class PresetLoader {
 
     }
 
-    static String readFile(String path, Charset encoding)
+    private static String readFile(String path, Charset encoding)
             throws IOException
     {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
@@ -77,6 +84,9 @@ public class PresetLoader {
     }
 
 
+    /**
+     * All currently implemented encodings
+     */
     public enum PresetEncoding
     {
         RLE,

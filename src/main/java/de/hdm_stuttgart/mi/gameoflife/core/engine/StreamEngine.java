@@ -4,10 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,7 +14,7 @@ public class StreamEngine implements IEngine {
     private EngineTimer engineTimer = new EngineTimer();
     private boolean calculateParallel;
     private boolean isRunning = false;
-    private HashMap<Cell,FutureCellState> changes = new HashMap<Cell,FutureCellState>();
+    private HashMap<Cell, CellStateChange> changes = new HashMap<Cell, CellStateChange>();
     private HashSet<Cell> scheduledChanges = new HashSet<Cell>();
 
     private SimulationSettings settings = new SimulationSettings();
@@ -38,6 +34,11 @@ public class StreamEngine implements IEngine {
         gameGrid = new Grid();
     }
 
+    /**
+     * Starts calculation
+     * @param onSuccess Runnable to be executed on success
+     * @param settings The settings object
+     */
     public void startCalculation(Runnable onSuccess, SimulationSettings settings) {
         isRunning = true;
         engineTimer.startInterval(settings.getMsPerTick(), () -> {
@@ -51,23 +52,35 @@ public class StreamEngine implements IEngine {
         calculateParallel = settings.getParallelCalculations();
     }
 
-
+    /**
+     * Loads in the settings for the engine.
+     * @param settings
+     */
     public void loadSettings(SimulationSettings settings) {
         calculateParallel = settings.getParallelCalculations();
     }
 
-
+    /**
+     * Will stop automatic calculation.
+     * Won't do anything if none is running at all.
+     */
     public void stopCalculation() {
         isRunning = false;
         engineTimer.stopInterval();
         logger.trace("Stopped automated Calculation");
     }
 
+    /**
+     *
+     * @return Is this engine running right now?
+     */
     public boolean isRunning(){
         return isRunning;
     }
 
-
+    /**
+     * Calculates one single next generation.
+     */
     public void nextGeneration() {
         synchronized (gameGrid){
 
@@ -87,7 +100,7 @@ public class StreamEngine implements IEngine {
                         if(changes.containsKey(cell)){
                             changes.remove(cell);
                         }
-                        changes.put(cell, new FutureCellState(cell, newState));
+                        changes.put(cell, new CellStateChange(cell, newState));
                     }
 
                     gameGrid.setState(cell, newState);
@@ -110,9 +123,9 @@ public class StreamEngine implements IEngine {
                 });
             });
 
-            List<FutureCellState> futureCellStates =
+            List<CellStateChange> cellStateChanges =
             deadCellsToCheck.entrySet().stream().filter(cellByteEntry -> cellByteEntry.getValue()==3)
-                    .map(cellByteEntry -> new FutureCellState(cellByteEntry.getKey(), true, true)).collect(Collectors.toList());
+                    .map(cellByteEntry -> new CellStateChange(cellByteEntry.getKey(), true, true)).collect(Collectors.toList());
 
 
             //2. Check for deaths
@@ -122,15 +135,15 @@ public class StreamEngine implements IEngine {
                 aliveCellStream = aliveCellStream.parallel();
             }
 
-            futureCellStates.addAll(aliveCellStream
+            cellStateChanges.addAll(aliveCellStream
                     .map(cell ->
                             {
-                                FutureCellState futureCellState = new FutureCellState(cell,true);
+                                CellStateChange cellStateChange = new CellStateChange(cell,true);
 
                                 byte aliveNeighbourCount = (byte) cell.getNeighbours().stream().filter(neighbourCell -> gameGrid.getState(neighbourCell)).count();
 
-                                if(aliveNeighbourCount<2 | aliveNeighbourCount>3) futureCellState.setAlive(false);
-                                return futureCellState;
+                                if(aliveNeighbourCount<2 | aliveNeighbourCount>3) cellStateChange.setAlive(false);
+                                return cellStateChange;
 
                             }
                     ).collect(Collectors.toList()));
@@ -138,7 +151,7 @@ public class StreamEngine implements IEngine {
 
             //3. Apply Changes
             synchronized (changes){
-                futureCellStates.stream().filter(futureCellState -> futureCellState.isChanged() || settings.isUninitialized()).forEach(state -> {
+                cellStateChanges.stream().filter(futureCellState -> futureCellState.isChanged() || settings.isUninitialized()).forEach(state -> {
                     if(settings.isInBounds(state.getCell())){
                         if(changes.containsKey(state.getCell())){
                             changes.remove(state.getCell());
@@ -157,7 +170,10 @@ public class StreamEngine implements IEngine {
         }
     }
 
-
+    /**
+     * Used to stop calculations and replace the internal grid with another one.
+     * @param grid The new grid to use
+     */
     public void loadGrid(IGrid grid) {
         stopCalculation();
 
@@ -170,15 +186,22 @@ public class StreamEngine implements IEngine {
         logger.trace("Replaced game grid");
     }
 
-
-    public FutureCellState[] getChanges() {
+    /**
+     * Get's and clears the internal changes buffer
+     * @return changes since last got changes
+     */
+    public CellStateChange[] getChanges() {
         synchronized (changes){
-            FutureCellState[] returnValue = changes.values().toArray(new FutureCellState[0]);
+            CellStateChange[] returnValue = changes.values().toArray(new CellStateChange[0]);
             changes.clear();
             return returnValue;
         }
     }
 
+    /**
+     * Will flip this cell before calculating the next generation
+     * @param cell Cell to flip
+     */
     public void scheduleCellFlip(Cell cell) {
         synchronized (scheduledChanges){
             scheduledChanges.add(cell);
@@ -191,7 +214,7 @@ public class StreamEngine implements IEngine {
                     if(changes.containsKey(cell)){
                         changes.remove(cell);
                     }
-                    changes.put(cell, new FutureCellState(cell, newState));
+                    changes.put(cell, new CellStateChange(cell, newState));
                 }
             }
         }

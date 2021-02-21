@@ -1,11 +1,10 @@
 package de.hdm_stuttgart.mi.gameoflife.core.controller;
 
 import de.hdm_stuttgart.mi.gameoflife.core.*;
-import de.hdm_stuttgart.mi.gameoflife.core.engine.FutureCellState;
+import de.hdm_stuttgart.mi.gameoflife.core.engine.CellStateChange;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineFactory;
 import de.hdm_stuttgart.mi.gameoflife.core.engine.factory.EngineNotFoundException;
 import de.hdm_stuttgart.mi.gameoflife.core.presets.PresetLoader;
-import de.hdm_stuttgart.mi.gameoflife.core.presets.StandardPreset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -124,7 +123,7 @@ public class Controller implements IController {
         start();
     }
 
-    public FutureCellState[] getChangedCellStates() {
+    public CellStateChange[] getChangedCellStates() {
         return engine.getChanges();
     }
 

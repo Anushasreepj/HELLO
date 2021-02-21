@@ -8,26 +8,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ Plain Text:
+ The first line is a header line, which has the form
+ !Name: Something
+ This is followed by optional "!" lines that describe the pattern.
+
+ Basically all variants use * or O (big o) for alive cells, both are supported.
+ Any other chars are turned into dead cells.
+ */
 public class PlainTextDecoder implements IPresetDecoder {
 
     @Override
     public IPreset convertToPreset(String rawData) throws InvalidPresetFileException {
-        //Plain Text Explained by https://www.conwaylife.com/wiki/Plaintext:
-        /*
-             The first line is a header line, which has the form
-             !Name: Something
-             This is followed by optional "!" lines that describe the pattern.
-
-             Basically all variants use * or O (big o) for alive cells.
-         */
-
         List<Cell> cells = new ArrayList<Cell>();
 
 
         //1. Separate Lines.
         String[] lines = rawData.split("\n");
 
-        //2. Find out name.
+        //2. Find name.
         String name;
         List<String> nameLines = Arrays.stream(lines).filter(s -> s.startsWith("!Name:")).collect(Collectors.toList());
         if(nameLines.isEmpty()) name = "New Preset";

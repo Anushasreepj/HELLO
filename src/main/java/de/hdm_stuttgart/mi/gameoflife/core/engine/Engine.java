@@ -14,7 +14,7 @@ public class Engine implements IEngine {
 
     private EngineTimer engineTimer = new EngineTimer();
 
-    private HashMap<Cell,FutureCellState> changes = new HashMap<Cell,FutureCellState>();
+    private HashMap<Cell, CellStateChange> changes = new HashMap<Cell, CellStateChange>();
 
     private HashSet<Cell> scheduledChanges = new HashSet<Cell>();
 
@@ -79,7 +79,7 @@ public class Engine implements IEngine {
                         if(changes.containsKey(cell)){
                             changes.remove(cell);
                         }
-                        changes.put(cell, new FutureCellState(cell, newState));
+                        changes.put(cell, new CellStateChange(cell, newState));
                     }
 
                     gameGrid.setState(cell, newState);
@@ -91,7 +91,7 @@ public class Engine implements IEngine {
             ExecutorService es = Executors.newCachedThreadPool();
 
             HashMap<Cell,Byte> deadCellsToCheck = new HashMap<Cell,Byte>();
-            HashSet<FutureCellState> futureCellStates = new HashSet<FutureCellState>();
+            HashSet<CellStateChange> cellStateChanges = new HashSet<CellStateChange>();
 
             //Iterate over alive cells
             for (Cell cell: gameGrid.getAliveCells()) {
@@ -116,7 +116,7 @@ public class Engine implements IEngine {
 
 
                 StateCalculatorRunnable stateCalculator = new StateCalculatorRunnable(cell,gameGrid);
-                futureCellStates.add(stateCalculator.futureCellState);
+                cellStateChanges.add(stateCalculator.cellStateChange);
 
                 if(calculateParallel){
                     es.execute(stateCalculator);
@@ -131,7 +131,7 @@ public class Engine implements IEngine {
             //Iterate over all dead cells
             for(Map.Entry<Cell,Byte> entry: deadCellsToCheck.entrySet()){
                 if(entry.getValue()==3){
-                    futureCellStates.add(new FutureCellState(entry.getKey(), true, true));
+                    cellStateChanges.add(new CellStateChange(entry.getKey(), true, true));
                 }
             }
 
@@ -145,7 +145,7 @@ public class Engine implements IEngine {
             // Execute changes.
 
             synchronized (changes){
-                for (FutureCellState state: futureCellStates) {
+                for (CellStateChange state: cellStateChanges) {
                     if(state.isChanged() || settings.isUninitialized()){
                         if(settings.isInBounds(state.getCell())){
                             if(changes.containsKey(state.getCell())){
@@ -191,16 +191,16 @@ public class Engine implements IEngine {
                     if(changes.containsKey(cell)){
                         changes.remove(cell);
                     }
-                    changes.put(cell, new FutureCellState(cell, newState));
+                    changes.put(cell, new CellStateChange(cell, newState));
                 }
             }
         }
     }
 
 
-    public FutureCellState[] getChanges() {
+    public CellStateChange[] getChanges() {
         synchronized (changes){
-            FutureCellState[] returnValue = changes.values().toArray(new FutureCellState[0]);
+            CellStateChange[] returnValue = changes.values().toArray(new CellStateChange[0]);
             changes.clear();
             return returnValue;
         }

@@ -81,10 +81,18 @@ public class SimulationSettings {
 
     private boolean uninitialized = false;
 
+    /**
+     * Sets whether the engine should save all current cell states as changes. Good if UI needs a full update
+     * @param uninitialized
+     */
     public void setUninitialized(boolean uninitialized){
         this.uninitialized = uninitialized;
     }
 
+    /**
+     *
+     * @return Is Uninitialized?
+     */
     public boolean isUninitialized(){
         return uninitialized;
     }

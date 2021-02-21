@@ -11,7 +11,7 @@ public class EngineTimer {
 
     /**
      * Starts or Restarts the Interval
-     * @param speed
+     * @param speed How many ms between intervals?
      */
     public void  startInterval(long speed, Runnable timerTask){
         shutdown();

@@ -1,0 +1,9 @@
+de.hdm_stuttgart.mi
+de.hdm_stuttgart.mi.gameoflife.controllers
+de.hdm_stuttgart.mi.gameoflife.controllers.components
+de.hdm_stuttgart.mi.gameoflife.controllers.router
+de.hdm_stuttgart.mi.gameoflife.core
+de.hdm_stuttgart.mi.gameoflife.core.controller
+de.hdm_stuttgart.mi.gameoflife.core.engine
+de.hdm_stuttgart.mi.gameoflife.core.engine.factory
+de.hdm_stuttgart.mi.gameoflife.core.presets

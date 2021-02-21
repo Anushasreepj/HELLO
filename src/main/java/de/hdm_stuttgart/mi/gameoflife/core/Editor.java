@@ -19,6 +19,10 @@ public class Editor {
         return grid;
     }
 
+    /**
+     * Places Preset on Grid, following exact preset cell locations
+     * @param preset Preset to load
+     */
     public void loadPreset(final IPreset preset){
         Arrays.stream(preset.getCells()).parallel().forEach(
                 cell -> grid.setState(cell,true)
@@ -26,6 +30,12 @@ public class Editor {
         logger.info("Loaded preset " + preset.getName());
     }
 
+    /**
+     * Places Preset on Grid, offset by specified quantity
+     * @param preset Preset to load
+     * @param offsetX horizontal offset
+     * @param offsetY vertical offset
+     */
     public void loadPresetOffset(final IPreset preset, final int offsetX, final int offsetY){
 
         Arrays.stream(preset.getCells()).parallel().forEach(
@@ -35,6 +45,9 @@ public class Editor {
         logger.info("Loaded preset " + preset.getName() + " offset by " + offsetX + "x, " + offsetY + "y");
     }
 
+    /**
+     * Clears the internal grid
+     */
     public void clear(){
         logger.info("Cleared grid");
         grid = new Grid();

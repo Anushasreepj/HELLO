@@ -1,0 +1,26 @@
+-classpath
+'/home/dominik/.m2/repository/org/openjfx/javafx-controls/14/javafx-controls-14.jar:/home/dominik/.m2/repository/org/openjfx/javafx-controls/14/javafx-controls-14-linux.jar:/home/dominik/.m2/repository/org/openjfx/javafx-graphics/14/javafx-graphics-14.jar:/home/dominik/.m2/repository/org/openjfx/javafx-graphics/14/javafx-graphics-14-linux.jar:/home/dominik/.m2/repository/org/openjfx/javafx-base/14/javafx-base-14.jar:/home/dominik/.m2/repository/org/openjfx/javafx-base/14/javafx-base-14-linux.jar:/home/dominik/.m2/repository/org/openjfx/javafx-fxml/14/javafx-fxml-14.jar:/home/dominik/.m2/repository/org/openjfx/javafx-fxml/14/javafx-fxml-14-linux.jar:/home/dominik/.m2/repository/org/apache/logging/log4j/log4j-api/2.4/log4j-api-2.4.jar:/home/dominik/.m2/repository/org/apache/logging/log4j/log4j-core/2.4/log4j-core-2.4.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'14'
+-sourcepath
+'/home/dominik/dev/studium/conways-game-of-life/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2021. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/home/dominik/dev/studium/conways-game-of-life/target/site/docs/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'GameOfLife 1.0-SNAPSHOT API'
+-linkoffline
+'https://docs.oracle.com/en/java/javase/14/docs/api' '/home/dominik/dev/studium/conways-game-of-life/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'GameOfLife 1.0-SNAPSHOT API'

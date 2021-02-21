@@ -1,6 +1,6 @@
 package de.hdm_stuttgart.mi.gameoflife.core;
 
-import de.hdm_stuttgart.mi.gameoflife.core.engine.FutureCellState;
+import de.hdm_stuttgart.mi.gameoflife.core.engine.CellStateChange;
 
 public interface IEngine {
 
@@ -33,9 +33,21 @@ public interface IEngine {
      */
     void loadGrid(IGrid grid);
 
+    /**
+     * Will flip this cell before calculating the next generation
+     * @param cell Cell to flip
+     */
     void scheduleCellFlip(Cell cell);
 
+    /**
+     *
+     * @return Is this engine running right now?
+     */
     boolean isRunning();
 
-    FutureCellState[] getChanges();
+    /**
+     * Get's and clears the internal changes buffer
+     * @return changes since last got changes
+     */
+    CellStateChange[] getChanges();
 }
