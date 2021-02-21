@@ -1,7 +1,7 @@
 package de.hdm_stuttgart.mi.gameoflife.controllers.components;
 
 import de.hdm_stuttgart.mi.gameoflife.core.Cell;
-import de.hdm_stuttgart.mi.gameoflife.core.engine.FutureCellState;
+import de.hdm_stuttgart.mi.gameoflife.core.engine.CellStateChange;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -32,11 +32,11 @@ public class UIGrid extends Canvas {
      *
      * @param changedCellStates
      */
-    public void update(FutureCellState[] changedCellStates) {
+    public void update(CellStateChange[] changedCellStates) {
 
         GraphicsContext cc = this.getGraphicsContext2D();
 
-        for(FutureCellState changedCellState: changedCellStates){
+        for(CellStateChange changedCellState: changedCellStates){
             updateCell(cc, changedCellState);
         }
     }
@@ -45,7 +45,7 @@ public class UIGrid extends Canvas {
         GraphicsContext cc = this.getGraphicsContext2D();
 
         for(Cell cell: aliveCells){
-            updateCell(cc, new FutureCellState(cell, true));
+            updateCell(cc, new CellStateChange(cell, true));
         }
     }
 
@@ -69,7 +69,7 @@ public class UIGrid extends Canvas {
         final int gridLength = gridSize / (cellSize + spaceBetween);
         for (int x = 0; x < gridLength; x++){
             for (int y = 0; y < gridLength; y++){
-                updateCell(cc, new FutureCellState(new Cell(x,y), false, true));
+                updateCell(cc, new CellStateChange(new Cell(x,y), false, true));
             }
         }
 
@@ -80,7 +80,7 @@ public class UIGrid extends Canvas {
      * @param cc
      * @param cellState
      */
-    private void updateCell(GraphicsContext cc, FutureCellState cellState) {
+    private void updateCell(GraphicsContext cc, CellStateChange cellState) {
         if(cellState.isAlive()) cc.setFill(Color.PURPLE);
         else cc.setFill(Color.DARKGRAY);
 
